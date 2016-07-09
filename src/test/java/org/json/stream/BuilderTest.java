@@ -5,6 +5,10 @@ import org.json.JSONObject;
 import org.junit.Assert;
 import org.junit.Test;
 
+import java.io.StringReader;
+import java.math.BigDecimal;
+import java.math.BigInteger;
+
 /**
  * Test cases for JSONObjectBuilder.
  *
@@ -50,6 +54,62 @@ public final class BuilderTest {
     private static final String TRUE_1 = "true";
     private static final String FALSE_1 = "false";
     private static final String NULL_1 = "null";
+
+    private static final String OBJECT_TEST_1 = "{"+
+            "\"trueKey\":true,"+
+            "\"falseKey\":false,"+
+            "\"nullKey\":null,"+
+            "\"stringKey\":\"hello world!\","+
+            "\"escapeStringKey\":\"h\be\tllo w\u1234orld!\","+
+            "\"intKey\":42,"+
+            "\"doubleKey\":-23.45e67"+
+            "}";
+
+    private static final String OBJECT_TEST_2 = "{"+
+            "\"trueKey\":true,"+
+            "\"falseKey\":false,"+
+            "\"trueStrKey\":\"true\","+
+            "\"falseStrKey\":\"false\","+
+            "\"stringKey\":\"hello world!\","+
+            "\"intKey\":42,"+
+            "\"intStrKey\":\"43\","+
+            "\"longKey\":1234567890123456789,"+
+            "\"longStrKey\":\"987654321098765432\","+
+            "\"doubleKey\":-23.45e7,"+
+            "\"doubleStrKey\":\"00001.000\","+
+            "\"arrayKey\":[0,1,2],"+
+            "\"objectKey\":{\"myKey\":\"myVal\"}"+
+            "}";
+
+    private static final String OBJECT_TEST_3 = "{"+
+            "\"numberWithDecimals\":299792.457999999984,"+
+            "\"largeNumber\":12345678901234567890,"+
+            "\"preciseNumber\":0.2000000000000000111,"+
+            "\"largeExponent\":-23.45e2327"+
+            "}";
+
+    private static final String ARRAY_TEST_1 = "["+
+            "true,"+
+            "false,"+
+            "\"true\","+
+            "\"false\","+
+            "\"hello\","+
+            "23.45e-4,"+
+            "\"23.45\","+
+            "42,"+
+            "\"43\","+
+            "["+
+            "\"world\""+
+            "],"+
+            "{"+
+            "\"key1\":\"value1\","+
+            "\"key2\":\"value2\","+
+            "\"key3\":\"value3\","+
+            "\"key4\":\"value4\""+
+            "},"+
+            "0,"+
+            "\"-1\""+
+            "]";
 
 
     @Test
@@ -445,5 +505,139 @@ public final class BuilderTest {
 
         Double dbl = (Double) value;
         Assert.assertEquals(Double.valueOf(2e+10d), dbl);
+    }
+
+    /**
+     * Create a JSONArray doc with a variety of different elements.
+     * Confirm that the values can be accessed via the get[type]() API methods.
+     * Retrofitted from the JSONArrayTest test class.
+     */
+    @Test
+    public void testGetArrayValues() {
+        JSONArray jsonArray = JSONObjectBuilder.buildJSONArray(
+                new StringReader(ARRAY_TEST_1));
+
+        // booleans
+        Assert.assertTrue("Array true",
+                true == jsonArray.getBoolean(0));
+        Assert.assertTrue("Array false",
+                false == jsonArray.getBoolean(1));
+        Assert.assertTrue("Array string true",
+                true == jsonArray.getBoolean(2));
+        Assert.assertTrue("Array string false",
+                false == jsonArray.getBoolean(3));
+        // strings
+        Assert.assertTrue("Array value string",
+                "hello".equals(jsonArray.getString(4)));
+        // doubles
+        Assert.assertTrue("Array double",
+                new Double(23.45e-4).equals(jsonArray.getDouble(5)));
+        Assert.assertTrue("Array string double",
+                new Double(23.45).equals(jsonArray.getDouble(6)));
+        // ints
+        Assert.assertTrue("Array value int",
+                new Integer(42).equals(jsonArray.getInt(7)));
+        Assert.assertTrue("Array value string int",
+                new Integer(43).equals(jsonArray.getInt(8)));
+        // nested objects
+        JSONArray nestedJsonArray = jsonArray.getJSONArray(9);
+        Assert.assertTrue("Array value JSONArray", nestedJsonArray != null);
+        JSONObject nestedJsonObject = jsonArray.getJSONObject(10);
+        Assert.assertTrue("Array value JSONObject", nestedJsonObject != null);
+        // longs
+        Assert.assertTrue("Array value long",
+                new Long(0).equals(jsonArray.getLong(11)));
+        Assert.assertTrue("Array value string long",
+                new Long(-1).equals(jsonArray.getLong(12)));
+
+        Assert.assertTrue("Array value null", jsonArray.isNull(-1));
+    }
+
+    /**
+     * Exercise some JSONObject get[type] and opt[type] methods.
+     * Retrofitted from the JSONObjectTest test class.
+     */
+    @Test
+    public void testJsonObjectValues() {
+        JSONObject jsonObject = JSONObjectBuilder.buildJSONObject(
+                new StringReader(OBJECT_TEST_2));
+        Assert.assertTrue("trueKey should be true", jsonObject.getBoolean("trueKey"));
+        Assert.assertTrue("opt trueKey should be true", jsonObject.optBoolean("trueKey"));
+        Assert.assertTrue("falseKey should be false", !jsonObject.getBoolean("falseKey"));
+        Assert.assertTrue("trueStrKey should be true", jsonObject.getBoolean("trueStrKey"));
+        Assert.assertTrue("trueStrKey should be true", jsonObject.optBoolean("trueStrKey"));
+        Assert.assertTrue("falseStrKey should be false", !jsonObject.getBoolean("falseStrKey"));
+        Assert.assertTrue("stringKey should be string",
+                jsonObject.getString("stringKey").equals("hello world!"));
+        Assert.assertTrue("doubleKey should be double",
+                jsonObject.getDouble("doubleKey") == -23.45e7);
+        Assert.assertTrue("doubleStrKey should be double",
+                jsonObject.getDouble("doubleStrKey") == 1);
+        Assert.assertTrue("opt doubleKey should be double",
+                jsonObject.optDouble("doubleKey") == -23.45e7);
+        Assert.assertTrue("opt doubleKey with Default should be double",
+                jsonObject.optDouble("doubleStrKey", Double.NaN) == 1);
+        Assert.assertTrue("intKey should be int",
+                jsonObject.optInt("intKey") == 42);
+        Assert.assertTrue("opt intKey should be int",
+                jsonObject.optInt("intKey", 0) == 42);
+        Assert.assertTrue("opt intKey with default should be int",
+                jsonObject.getInt("intKey") == 42);
+        Assert.assertTrue("intStrKey should be int",
+                jsonObject.getInt("intStrKey") == 43);
+        Assert.assertTrue("longKey should be long",
+                jsonObject.getLong("longKey") == 1234567890123456789L);
+        Assert.assertTrue("opt longKey should be long",
+                jsonObject.optLong("longKey") == 1234567890123456789L);
+        Assert.assertTrue("opt longKey with default should be long",
+                jsonObject.optLong("longKey", 0) == 1234567890123456789L);
+        Assert.assertTrue("longStrKey should be long",
+                jsonObject.getLong("longStrKey") == 987654321098765432L);
+        Assert.assertTrue("xKey should not exist",
+                jsonObject.isNull("xKey"));
+        Assert.assertTrue("stringKey should exist",
+                jsonObject.has("stringKey"));
+        Assert.assertTrue("opt stringKey should string",
+                jsonObject.optString("stringKey").equals("hello world!"));
+        Assert.assertTrue("opt stringKey with default should string",
+                jsonObject.optString("stringKey", "not found").equals("hello world!"));
+        JSONArray jsonArray = jsonObject.getJSONArray("arrayKey");
+        Assert.assertTrue("arrayKey should be JSONArray",
+                jsonArray.getInt(0) == 0 &&
+                        jsonArray.getInt(1) == 1 &&
+                        jsonArray.getInt(2) == 2);
+        jsonArray = jsonObject.optJSONArray("arrayKey");
+        Assert.assertTrue("opt arrayKey should be JSONArray",
+                jsonArray.getInt(0) == 0 &&
+                        jsonArray.getInt(1) == 1 &&
+                        jsonArray.getInt(2) == 2);
+        JSONObject jsonObjectInner = jsonObject.getJSONObject("objectKey");
+        Assert.assertTrue("objectKey should be JSONObject",
+                jsonObjectInner.get("myKey").equals("myVal"));
+    }
+
+    /**
+     * This test documents numeric values which could be numerically
+     * handled as BigDecimal or BigInteger. Some of these will be parsed
+     * as double, but with precision loss.
+     * Retrofitted from the JSONObjectTest test class.
+     */
+    @Test
+    public void testJsonValidNumberValuesNeitherLongNorIEEE754Compatible() {
+        // Valid JSON Numbers, probably should return BigDecimal or BigInteger objects
+        JSONObject jsonObject = JSONObjectBuilder.buildJSONObject(OBJECT_TEST_3);
+
+        // Comes back as a double, but loses precision
+        Assert.assertTrue( "numberWithDecimals currently evaluates to double 299792.458",
+                jsonObject.get( "numberWithDecimals" ).equals( new Double( "299792.458" ) ) );
+        Object obj = jsonObject.get( "largeNumber" );
+        Assert.assertTrue("largeNumber currently evaluates to biginteger",
+                new BigInteger("12345678901234567890").equals(obj));
+        // comes back as a double but loses precision
+        Assert.assertTrue( "preciseNumber currently evaluates to double 0.2",
+                jsonObject.get( "preciseNumber" ).equals(Double.valueOf(0.2)));
+        obj = jsonObject.get( "largeExponent" );
+        Assert.assertTrue("largeExponent should currently evaluates as a string",
+                new BigDecimal("-23.45e2327").equals(obj));
     }
 }

@@ -6,6 +6,7 @@ import org.json.stream.JSONStreamReader.ValueType;
 import org.junit.Assert;
 import org.junit.Test;
 
+import java.io.StringReader;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 
@@ -54,6 +55,62 @@ public final class ParserTest {
     private static final String TRUE_1 = "true";
     private static final String FALSE_1 = "false";
     private static final String NULL_1 = "null";
+
+    private static final String OBJECT_TEST_1 = "{" +
+            "\"trueKey\":true," +
+            "\"falseKey\":false," +
+            "\"nullKey\":null," +
+            "\"stringKey\":\"hello world!\"," +
+            "\"escapeStringKey\":\"h\\be\\tllo w\\u1234orld!\"," +
+            "\"intKey\":42," +
+            "\"doubleKey\":-23.45e67" +
+            "}";
+
+    private static final String OBJECT_TEST_2 = "{" +
+            "\"trueKey\":true," +
+            "\"falseKey\":false," +
+            "\"trueStrKey\":\"true\"," +
+            "\"falseStrKey\":\"false\"," +
+            "\"stringKey\":\"hello world!\"," +
+            "\"intKey\":42," +
+            "\"intStrKey\":\"43\"," +
+            "\"longKey\":1234567890123456789," +
+            "\"longStrKey\":\"987654321098765432\"," +
+            "\"doubleKey\":-23.45e7," +
+            "\"doubleStrKey\":\"00001.000\"," +
+            "\"arrayKey\":[0,1,2]," +
+            "\"objectKey\":{\"myKey\":\"myVal\"}" +
+            "}";
+
+    private static final String OBJECT_TEST_3 = "{" +
+            "\"numberWithDecimals\":299792.457999999984," +
+            "\"largeNumber\":12345678901234567890," +
+            "\"preciseNumber\":0.2000000000000000111," +
+            "\"largeExponent\":-23.45e2327" +
+            "}";
+
+    private static final String ARRAY_TEST_1 = "[" +
+            "true," +
+            "false," +
+            "\"true\"," +
+            "\"false\"," +
+            "\"hello\"," +
+            "23.45e-4," +
+            "\"23.45\"," +
+            "42," +
+            "\"43\"," +
+            "[" +
+            "\"world\"" +
+            "]," +
+            "{" +
+            "\"key1\":\"value1\"," +
+            "\"key2\":\"value2\"," +
+            "\"key3\":\"value3\"," +
+            "\"key4\":\"value4\"" +
+            "}," +
+            "0," +
+            "\"-1\"" +
+            "]";
 
 
     @Test
@@ -533,6 +590,196 @@ public final class ParserTest {
         Assert.assertEquals(ParseState.DOCUMENT, parser.nextState());
         Assert.assertEquals(ParseState.VALUE, parser.nextState());
         Assert.assertEquals(new BigDecimal("2e+10"), parser.nextBigDecimalValue());
+        Assert.assertEquals(ParseState.END_DOCUMENT, parser.nextState());
+    }
+
+    @Test
+    public void testObjectTest1() throws Exception {
+        JSONStreamReader parser = new JSONStreamReader(new StringReader(OBJECT_TEST_1));
+
+        Assert.assertEquals(ParseState.DOCUMENT, parser.nextState());
+        Assert.assertEquals(ParseState.OBJECT, parser.nextState());
+        Assert.assertEquals(ParseState.KEY, parser.nextState());
+        Assert.assertEquals("trueKey", parser.nextKey());
+        Assert.assertEquals(ParseState.VALUE, parser.nextState());
+        Assert.assertTrue(parser.nextBooleanValue());
+        Assert.assertEquals(ParseState.KEY, parser.nextState());
+        Assert.assertEquals("falseKey", parser.nextKey());
+        Assert.assertEquals(ParseState.VALUE, parser.nextState());
+        Assert.assertFalse(parser.nextBooleanValue());
+        Assert.assertEquals(ParseState.KEY, parser.nextState());
+        Assert.assertEquals("nullKey", parser.nextKey());
+        Assert.assertEquals(ParseState.VALUE, parser.nextState());
+        Assert.assertEquals(JSONObject.NULL, parser.nextValue());
+        Assert.assertEquals(ParseState.KEY, parser.nextState());
+        Assert.assertEquals("stringKey", parser.nextKey());
+        Assert.assertEquals(ParseState.VALUE, parser.nextState());
+        Assert.assertEquals("hello world!", parser.nextStringValue());
+        Assert.assertEquals(ParseState.KEY, parser.nextState());
+        Assert.assertEquals("escapeStringKey", parser.nextKey());
+        Assert.assertEquals(ParseState.VALUE, parser.nextState());
+        Assert.assertEquals("h\be\tllo w\u1234orld!", parser.nextStringValue());
+        Assert.assertEquals(ParseState.KEY, parser.nextState());
+        Assert.assertEquals("intKey", parser.nextKey());
+        Assert.assertEquals(ParseState.VALUE, parser.nextState());
+        Assert.assertEquals(42, parser.nextIntValue());
+        Assert.assertEquals(ParseState.KEY, parser.nextState());
+        Assert.assertEquals("doubleKey", parser.nextKey());
+        Assert.assertEquals(ParseState.VALUE, parser.nextState());
+        Assert.assertEquals(-23.45e67d, parser.nextDoubleValue(), 1.0d);
+        Assert.assertEquals(ParseState.END_OBJECT, parser.nextState());
+        Assert.assertEquals(ParseState.END_DOCUMENT, parser.nextState());
+    }
+
+    @Test
+    public void testObjectTest2() throws Exception {
+        JSONStreamReader parser = new JSONStreamReader(new StringReader(OBJECT_TEST_2));
+
+        Assert.assertEquals(ParseState.DOCUMENT, parser.nextState());
+        Assert.assertEquals(ParseState.OBJECT, parser.nextState());
+        Assert.assertEquals(ParseState.KEY, parser.nextState());
+        Assert.assertEquals("trueKey", parser.nextKey());
+        Assert.assertEquals(ParseState.VALUE, parser.nextState());
+        Assert.assertTrue(parser.nextBooleanValue());
+        Assert.assertEquals(ParseState.KEY, parser.nextState());
+        Assert.assertEquals("falseKey", parser.nextKey());
+        Assert.assertEquals(ParseState.VALUE, parser.nextState());
+        Assert.assertFalse(parser.nextBooleanValue());
+        Assert.assertEquals(ParseState.KEY, parser.nextState());
+        Assert.assertEquals("trueStrKey", parser.nextKey());
+        Assert.assertEquals(ParseState.VALUE, parser.nextState());
+        Assert.assertEquals("true", parser.nextStringValue());
+        Assert.assertEquals(ParseState.KEY, parser.nextState());
+        Assert.assertEquals("falseStrKey", parser.nextKey());
+        Assert.assertEquals(ParseState.VALUE, parser.nextState());
+        Assert.assertEquals("false", parser.nextStringValue());
+        Assert.assertEquals(ParseState.KEY, parser.nextState());
+        Assert.assertEquals("stringKey", parser.nextKey());
+        Assert.assertEquals(ParseState.VALUE, parser.nextState());
+        Assert.assertEquals("hello world!", parser.nextStringValue());
+        Assert.assertEquals(ParseState.KEY, parser.nextState());
+        Assert.assertEquals("intKey", parser.nextKey());
+        Assert.assertEquals(ParseState.VALUE, parser.nextState());
+        Assert.assertEquals(42, parser.nextIntValue());
+        Assert.assertEquals(ParseState.KEY, parser.nextState());
+        Assert.assertEquals("intStrKey", parser.nextKey());
+        Assert.assertEquals(ParseState.VALUE, parser.nextState());
+        Assert.assertEquals("43", parser.nextStringValue());
+        Assert.assertEquals(ParseState.KEY, parser.nextState());
+        Assert.assertEquals("longKey", parser.nextKey());
+        Assert.assertEquals(ParseState.VALUE, parser.nextState());
+        Assert.assertEquals(1234567890123456789L, parser.nextLongValue());
+        Assert.assertEquals(ParseState.KEY, parser.nextState());
+        Assert.assertEquals("longStrKey", parser.nextKey());
+        Assert.assertEquals(ParseState.VALUE, parser.nextState());
+        Assert.assertEquals("987654321098765432", parser.nextStringValue());
+        Assert.assertEquals(ParseState.KEY, parser.nextState());
+        Assert.assertEquals("doubleKey", parser.nextKey());
+        Assert.assertEquals(ParseState.VALUE, parser.nextState());
+        Assert.assertEquals(-23.45e7, parser.nextDoubleValue(), 1.0d);
+        Assert.assertEquals(ParseState.KEY, parser.nextState());
+        Assert.assertEquals("doubleStrKey", parser.nextKey());
+        Assert.assertEquals(ParseState.VALUE, parser.nextState());
+        Assert.assertEquals("00001.000", parser.nextStringValue());
+        Assert.assertEquals(ParseState.KEY, parser.nextState());
+        Assert.assertEquals("arrayKey", parser.nextKey());
+        Assert.assertEquals(ParseState.ARRAY, parser.nextState());
+        Assert.assertEquals(ParseState.VALUE, parser.nextState());
+        Assert.assertEquals(0, parser.nextIntValue());
+        Assert.assertEquals(ParseState.VALUE, parser.nextState());
+        Assert.assertEquals(1, parser.nextIntValue());
+        Assert.assertEquals(ParseState.VALUE, parser.nextState());
+        Assert.assertEquals(2, parser.nextIntValue());
+        Assert.assertEquals(ParseState.END_ARRAY, parser.nextState());
+        Assert.assertEquals(ParseState.KEY, parser.nextState());
+        Assert.assertEquals("objectKey", parser.nextKey());
+        Assert.assertEquals(ParseState.OBJECT, parser.nextState());
+        Assert.assertEquals(ParseState.KEY, parser.nextState());
+        Assert.assertEquals("myKey", parser.nextKey());
+        Assert.assertEquals(ParseState.VALUE, parser.nextState());
+        Assert.assertEquals("myVal", parser.nextStringValue());
+        Assert.assertEquals(ParseState.END_OBJECT, parser.nextState());
+        Assert.assertEquals(ParseState.END_OBJECT, parser.nextState());
+        Assert.assertEquals(ParseState.END_DOCUMENT, parser.nextState());
+    }
+
+    @Test
+    public void testObjectTest3() throws Exception {
+        JSONStreamReader parser = new JSONStreamReader(new StringReader(OBJECT_TEST_3));
+
+        Assert.assertEquals(ParseState.DOCUMENT, parser.nextState());
+        Assert.assertEquals(ParseState.OBJECT, parser.nextState());
+        Assert.assertEquals(ParseState.KEY, parser.nextState());
+        Assert.assertEquals("numberWithDecimals", parser.nextKey());
+        Assert.assertEquals(ParseState.VALUE, parser.nextState());
+        Assert.assertEquals(parser.nextDoubleValue(), 299792.458d, 0.001d);
+        Assert.assertEquals(ParseState.KEY, parser.nextState());
+        Assert.assertEquals("largeNumber", parser.nextKey());
+        Assert.assertEquals(ParseState.VALUE, parser.nextState());
+        Assert.assertEquals(new BigInteger("12345678901234567890"), parser.nextBigIntegerValue());
+        Assert.assertEquals(ParseState.KEY, parser.nextState());
+        Assert.assertEquals("preciseNumber", parser.nextKey());
+        Assert.assertEquals(ParseState.VALUE, parser.nextState());
+        Assert.assertEquals(0.2d, parser.nextDoubleValue(), 0.001d);
+        Assert.assertEquals(ParseState.KEY, parser.nextState());
+        Assert.assertEquals("largeExponent", parser.nextKey());
+        Assert.assertEquals(ParseState.VALUE, parser.nextState());
+        Assert.assertEquals(new BigDecimal("-23.45e2327"), parser.nextBigDecimalValue());
+        Assert.assertEquals(ParseState.END_OBJECT, parser.nextState());
+        Assert.assertEquals(ParseState.END_DOCUMENT, parser.nextState());
+    }
+
+    @Test
+    public void testArrayTest1() throws Exception {
+        JSONStreamReader parser = new JSONStreamReader(new StringReader(ARRAY_TEST_1));
+
+        Assert.assertEquals(ParseState.DOCUMENT, parser.nextState());
+        Assert.assertEquals(ParseState.ARRAY, parser.nextState());
+        Assert.assertEquals(ParseState.VALUE, parser.nextState());
+        Assert.assertTrue(parser.nextBooleanValue());
+        Assert.assertEquals(ParseState.VALUE, parser.nextState());
+        Assert.assertFalse(parser.nextBooleanValue());
+        Assert.assertEquals(ParseState.VALUE, parser.nextState());
+        Assert.assertEquals("true", parser.nextStringValue());
+        Assert.assertEquals(ParseState.VALUE, parser.nextState());
+        Assert.assertEquals("false", parser.nextStringValue());
+        Assert.assertEquals(ParseState.VALUE, parser.nextState());
+        Assert.assertEquals("hello", parser.nextStringValue());
+        Assert.assertEquals(ParseState.VALUE, parser.nextState());
+        Assert.assertEquals(23.45e-4d, parser.nextDoubleValue(), 0.0000001d);
+        Assert.assertEquals(ParseState.VALUE, parser.nextState());
+        Assert.assertEquals("23.45", parser.nextStringValue());
+        Assert.assertEquals(ParseState.VALUE, parser.nextState());
+        Assert.assertEquals(42, parser.nextIntValue());
+        Assert.assertEquals(ParseState.VALUE, parser.nextState());
+        Assert.assertEquals("43", parser.nextStringValue());
+        Assert.assertEquals(ParseState.ARRAY, parser.nextState());
+        Assert.assertEquals(ParseState.VALUE, parser.nextState());
+        Assert.assertEquals("world", parser.nextStringValue());
+        Assert.assertEquals(ParseState.END_ARRAY, parser.nextState());
+        Assert.assertEquals(ParseState.OBJECT, parser.nextState());
+        Assert.assertEquals(ParseState.KEY, parser.nextState());
+        Assert.assertEquals("key1", parser.nextKey());
+        Assert.assertEquals(ParseState.VALUE, parser.nextState());
+        Assert.assertEquals("value1", parser.nextStringValue());
+        Assert.assertEquals(ParseState.KEY, parser.nextState());
+        Assert.assertEquals("key2", parser.nextKey());
+        Assert.assertEquals(ParseState.VALUE, parser.nextState());
+        Assert.assertEquals("value2", parser.nextStringValue());
+        Assert.assertEquals(ParseState.KEY, parser.nextState());
+        Assert.assertEquals("key3", parser.nextKey());
+        Assert.assertEquals(ParseState.VALUE, parser.nextState());
+        Assert.assertEquals("value3", parser.nextStringValue());
+        Assert.assertEquals(ParseState.KEY, parser.nextState());
+        Assert.assertEquals("key4", parser.nextKey());
+        Assert.assertEquals(ParseState.VALUE, parser.nextState());
+        Assert.assertEquals("value4", parser.nextStringValue());
+        Assert.assertEquals(ParseState.END_OBJECT, parser.nextState());
+        Assert.assertEquals(ParseState.VALUE, parser.nextState());
+        Assert.assertEquals(0L, parser.nextLongValue());
+        Assert.assertEquals(ParseState.VALUE, parser.nextState());
+        Assert.assertEquals("-1", parser.nextStringValue());
+        Assert.assertEquals(ParseState.END_ARRAY, parser.nextState());
         Assert.assertEquals(ParseState.END_DOCUMENT, parser.nextState());
     }
 }
