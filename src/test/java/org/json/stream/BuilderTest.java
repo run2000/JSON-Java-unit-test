@@ -255,8 +255,7 @@ public final class BuilderTest {
 
     @Test
     public void testSimpleArray2() throws Exception {
-        JSONStreamReader parser = new JSONStreamReader(ARRAY_1);
-        JSONArray jsonArray = JSONObjectBuilder.buildJSONArray(parser);
+        JSONArray jsonArray = JSONObjectBuilder.buildJSONArray(ARRAY_1);
         Assert.assertNotNull(jsonArray);
 
         Assert.assertEquals(0, jsonArray.length());
@@ -275,8 +274,7 @@ public final class BuilderTest {
 
     @Test
     public void testArray1A() throws Exception {
-        JSONStreamReader parser = new JSONStreamReader(ARRAY_2);
-        JSONArray jsonArray = JSONObjectBuilder.buildJSONArray(parser);
+        JSONArray jsonArray = JSONObjectBuilder.buildJSONArray(ARRAY_2);
         Assert.assertNotNull(jsonArray);
 
         Assert.assertEquals(1, jsonArray.length());

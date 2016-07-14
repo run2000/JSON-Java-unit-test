@@ -2,7 +2,6 @@ package org.json.stream;
 
 import org.json.JSONObject;
 import org.json.stream.JSONStreamReader.ParseState;
-import org.json.stream.JSONStreamReader.ValueType;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -129,7 +128,7 @@ public final class ParserTest {
         Assert.assertEquals(ParseState.OBJECT, parser.nextState());
         Assert.assertEquals(ParseState.KEY, parser.nextState());
         Assert.assertEquals("key", parser.nextKey());
-        Assert.assertEquals(ParseState.VALUE, parser.nextState());
+        Assert.assertEquals(ParseState.NUMBER_VALUE, parser.nextState());
         Assert.assertEquals(Double.valueOf(1.0d), parser.nextValue());
         Assert.assertEquals(ParseState.END_OBJECT, parser.nextState());
         Assert.assertEquals(ParseState.END_DOCUMENT, parser.nextState());
@@ -142,11 +141,11 @@ public final class ParserTest {
         Assert.assertEquals(ParseState.OBJECT, parser.nextState());
         Assert.assertEquals(ParseState.KEY, parser.nextState());
         Assert.assertEquals("key", parser.nextKey());
-        Assert.assertEquals(ParseState.VALUE, parser.nextState());
+        Assert.assertEquals(ParseState.NUMBER_VALUE, parser.nextState());
         Assert.assertEquals(Double.valueOf(1.0d), parser.nextValue());
         Assert.assertEquals(ParseState.KEY, parser.nextState());
         Assert.assertEquals("key2", parser.nextKey());
-        Assert.assertEquals(ParseState.VALUE, parser.nextState());
+        Assert.assertEquals(ParseState.BOOLEAN_VALUE, parser.nextState());
         Assert.assertEquals(Boolean.TRUE, parser.nextValue());
         Assert.assertEquals(ParseState.END_OBJECT, parser.nextState());
         Assert.assertEquals(ParseState.END_DOCUMENT, parser.nextState());
@@ -164,9 +163,9 @@ public final class ParserTest {
         Assert.assertEquals(ParseState.KEY, parser.nextState());
         Assert.assertEquals("key2", parser.nextKey());
         Assert.assertEquals(ParseState.ARRAY, parser.nextState());
-        Assert.assertEquals(ParseState.VALUE, parser.nextState());
+        Assert.assertEquals(ParseState.NUMBER_VALUE, parser.nextState());
         Assert.assertEquals(Integer.valueOf(1), parser.nextValue());
-        Assert.assertEquals(ParseState.VALUE, parser.nextState());
+        Assert.assertEquals(ParseState.BOOLEAN_VALUE, parser.nextState());
         Assert.assertEquals(Boolean.TRUE, parser.nextValue());
         Assert.assertEquals(ParseState.END_ARRAY, parser.nextState());
         Assert.assertEquals(ParseState.END_OBJECT, parser.nextState());
@@ -204,7 +203,7 @@ public final class ParserTest {
         JSONStreamReader parser = new JSONStreamReader(ARRAY_2);
         Assert.assertEquals(ParseState.DOCUMENT, parser.nextState());
         Assert.assertEquals(ParseState.ARRAY, parser.nextState());
-        Assert.assertEquals(ParseState.VALUE, parser.nextState());
+        Assert.assertEquals(ParseState.STRING_VALUE, parser.nextState());
         Assert.assertEquals("test", parser.nextValue());
         Assert.assertEquals(ParseState.END_ARRAY, parser.nextState());
         Assert.assertEquals(ParseState.END_DOCUMENT, parser.nextState());
@@ -215,17 +214,13 @@ public final class ParserTest {
         JSONStreamReader parser = new JSONStreamReader(ARRAY_3);
         Assert.assertEquals(ParseState.DOCUMENT, parser.nextState());
         Assert.assertEquals(ParseState.ARRAY, parser.nextState());
-        Assert.assertEquals(ParseState.VALUE, parser.nextState());
-        Assert.assertEquals(ValueType.STRING_VALUE, parser.getValueType());
+        Assert.assertEquals(ParseState.STRING_VALUE, parser.nextState());
         Assert.assertEquals("test", parser.nextValue());
-        Assert.assertEquals(ParseState.VALUE, parser.nextState());
-        Assert.assertEquals(ValueType.NUMBER_VALUE, parser.getValueType());
+        Assert.assertEquals(ParseState.NUMBER_VALUE, parser.nextState());
         Assert.assertEquals(Integer.valueOf(4), parser.nextValue());
-        Assert.assertEquals(ParseState.VALUE, parser.nextState());
-        Assert.assertEquals(ValueType.NULL_VALUE, parser.getValueType());
+        Assert.assertEquals(ParseState.NULL_VALUE, parser.nextState());
         Assert.assertEquals(JSONObject.NULL, parser.nextValue());
-        Assert.assertEquals(ParseState.VALUE, parser.nextState());
-        Assert.assertEquals(ValueType.BOOLEAN_VALUE, parser.getValueType());
+        Assert.assertEquals(ParseState.BOOLEAN_VALUE, parser.nextState());
         Assert.assertEquals(Boolean.FALSE, parser.nextValue());
         Assert.assertEquals(ParseState.END_ARRAY, parser.nextState());
         Assert.assertEquals(ParseState.END_DOCUMENT, parser.nextState());
@@ -246,7 +241,7 @@ public final class ParserTest {
     public void testSimpleString() throws Exception {
         JSONStreamReader parser = new JSONStreamReader(STRING_1);
         Assert.assertEquals(ParseState.DOCUMENT, parser.nextState());
-        Assert.assertEquals(ParseState.VALUE, parser.nextState());
+        Assert.assertEquals(ParseState.STRING_VALUE, parser.nextState());
         Assert.assertEquals("", parser.nextValue());
         Assert.assertEquals(ParseState.END_DOCUMENT, parser.nextState());
     }
@@ -255,7 +250,7 @@ public final class ParserTest {
     public void testSimpleStringTyped() throws Exception {
         JSONStreamReader parser = new JSONStreamReader(STRING_1);
         Assert.assertEquals(ParseState.DOCUMENT, parser.nextState());
-        Assert.assertEquals(ParseState.VALUE, parser.nextState());
+        Assert.assertEquals(ParseState.STRING_VALUE, parser.nextState());
         Assert.assertEquals("", parser.nextStringValue());
         Assert.assertEquals(ParseState.END_DOCUMENT, parser.nextState());
     }
@@ -264,7 +259,7 @@ public final class ParserTest {
     public void testSimpleString2() throws Exception {
         JSONStreamReader parser = new JSONStreamReader(STRING_2);
         Assert.assertEquals(ParseState.DOCUMENT, parser.nextState());
-        Assert.assertEquals(ParseState.VALUE, parser.nextState());
+        Assert.assertEquals(ParseState.STRING_VALUE, parser.nextState());
         Assert.assertEquals("This is a test.\r\n", parser.nextValue());
         Assert.assertEquals(ParseState.END_DOCUMENT, parser.nextState());
     }
@@ -273,7 +268,7 @@ public final class ParserTest {
     public void testSimpleString2Typed() throws Exception {
         JSONStreamReader parser = new JSONStreamReader(STRING_2);
         Assert.assertEquals(ParseState.DOCUMENT, parser.nextState());
-        Assert.assertEquals(ParseState.VALUE, parser.nextState());
+        Assert.assertEquals(ParseState.STRING_VALUE, parser.nextState());
         Assert.assertEquals("This is a test.\r\n", parser.nextStringValue());
         Assert.assertEquals(ParseState.END_DOCUMENT, parser.nextState());
     }
@@ -282,7 +277,7 @@ public final class ParserTest {
     public void testSimpleString3() throws Exception {
         JSONStreamReader parser = new JSONStreamReader(STRING_3);
         Assert.assertEquals(ParseState.DOCUMENT, parser.nextState());
-        Assert.assertEquals(ParseState.VALUE, parser.nextState());
+        Assert.assertEquals(ParseState.STRING_VALUE, parser.nextState());
         Assert.assertEquals("This is a unicode \u0032.", parser.nextValue());
         Assert.assertEquals(ParseState.END_DOCUMENT, parser.nextState());
     }
@@ -291,7 +286,7 @@ public final class ParserTest {
     public void testSimpleString3Typed() throws Exception {
         JSONStreamReader parser = new JSONStreamReader(STRING_3);
         Assert.assertEquals(ParseState.DOCUMENT, parser.nextState());
-        Assert.assertEquals(ParseState.VALUE, parser.nextState());
+        Assert.assertEquals(ParseState.STRING_VALUE, parser.nextState());
         Assert.assertEquals("This is a unicode \u0032.", parser.nextStringValue());
         Assert.assertEquals(ParseState.END_DOCUMENT, parser.nextState());
     }
@@ -300,7 +295,7 @@ public final class ParserTest {
     public void testSimpleString4() throws Exception {
         JSONStreamReader parser = new JSONStreamReader(STRING_4);
         Assert.assertEquals(ParseState.DOCUMENT, parser.nextState());
-        Assert.assertEquals(ParseState.VALUE, parser.nextState());
+        Assert.assertEquals(ParseState.STRING_VALUE, parser.nextState());
         Assert.assertEquals("This was\b\b\bis\ta \"quoted\" string\f", parser.nextValue());
         Assert.assertEquals(ParseState.END_DOCUMENT, parser.nextState());
     }
@@ -309,7 +304,7 @@ public final class ParserTest {
     public void testSimpleString4Typed() throws Exception {
         JSONStreamReader parser = new JSONStreamReader(STRING_4);
         Assert.assertEquals(ParseState.DOCUMENT, parser.nextState());
-        Assert.assertEquals(ParseState.VALUE, parser.nextState());
+        Assert.assertEquals(ParseState.STRING_VALUE, parser.nextState());
         Assert.assertEquals("This was\b\b\bis\ta \"quoted\" string\f", parser.nextStringValue());
         Assert.assertEquals(ParseState.END_DOCUMENT, parser.nextState());
     }
@@ -319,7 +314,7 @@ public final class ParserTest {
         JSONStreamReader parser = new JSONStreamReader(STRING_5);
 
         Assert.assertEquals(ParseState.DOCUMENT, parser.nextState());
-        Assert.assertEquals(ParseState.VALUE, parser.nextState());
+        Assert.assertEquals(ParseState.STRING_VALUE, parser.nextState());
 
         StringBuilder builder = new StringBuilder();
         parser.appendNextStringValue(builder);
@@ -333,7 +328,7 @@ public final class ParserTest {
         JSONStreamReader parser = new JSONStreamReader(STRING_5);
 
         Assert.assertEquals(ParseState.DOCUMENT, parser.nextState());
-        Assert.assertEquals(ParseState.VALUE, parser.nextState());
+        Assert.assertEquals(ParseState.STRING_VALUE, parser.nextState());
         Assert.assertEquals(ParseState.END_DOCUMENT, parser.skipToEndStructure());
     }
 
@@ -349,7 +344,7 @@ public final class ParserTest {
     public void testSimpleFalse() throws Exception {
         JSONStreamReader parser = new JSONStreamReader(FALSE_1);
         Assert.assertEquals(ParseState.DOCUMENT, parser.nextState());
-        Assert.assertEquals(ParseState.VALUE, parser.nextState());
+        Assert.assertEquals(ParseState.BOOLEAN_VALUE, parser.nextState());
         Assert.assertSame(Boolean.FALSE, parser.nextValue());
         Assert.assertEquals(ParseState.END_DOCUMENT, parser.nextState());
     }
@@ -358,7 +353,7 @@ public final class ParserTest {
     public void testSimpleFalseTyped() throws Exception {
         JSONStreamReader parser = new JSONStreamReader(FALSE_1);
         Assert.assertEquals(ParseState.DOCUMENT, parser.nextState());
-        Assert.assertEquals(ParseState.VALUE, parser.nextState());
+        Assert.assertEquals(ParseState.BOOLEAN_VALUE, parser.nextState());
         Assert.assertFalse(parser.nextBooleanValue());
         Assert.assertEquals(ParseState.END_DOCUMENT, parser.nextState());
     }
@@ -367,7 +362,7 @@ public final class ParserTest {
     public void testSimpleTrue() throws Exception {
         JSONStreamReader parser = new JSONStreamReader(TRUE_1);
         Assert.assertEquals(ParseState.DOCUMENT, parser.nextState());
-        Assert.assertEquals(ParseState.VALUE, parser.nextState());
+        Assert.assertEquals(ParseState.BOOLEAN_VALUE, parser.nextState());
         Assert.assertSame(Boolean.TRUE, parser.nextValue());
         Assert.assertEquals(ParseState.END_DOCUMENT, parser.nextState());
     }
@@ -376,7 +371,7 @@ public final class ParserTest {
     public void testSimpleTrueTyped() throws Exception {
         JSONStreamReader parser = new JSONStreamReader(TRUE_1);
         Assert.assertEquals(ParseState.DOCUMENT, parser.nextState());
-        Assert.assertEquals(ParseState.VALUE, parser.nextState());
+        Assert.assertEquals(ParseState.BOOLEAN_VALUE, parser.nextState());
         Assert.assertTrue(parser.nextBooleanValue());
         Assert.assertEquals(ParseState.END_DOCUMENT, parser.nextState());
     }
@@ -385,7 +380,7 @@ public final class ParserTest {
     public void testSimpleNull() throws Exception {
         JSONStreamReader parser = new JSONStreamReader(NULL_1);
         Assert.assertEquals(ParseState.DOCUMENT, parser.nextState());
-        Assert.assertEquals(ParseState.VALUE, parser.nextState());
+        Assert.assertEquals(ParseState.NULL_VALUE, parser.nextState());
         Assert.assertSame(JSONObject.NULL, parser.nextValue());
         Assert.assertEquals(ParseState.END_DOCUMENT, parser.nextState());
     }
@@ -394,7 +389,7 @@ public final class ParserTest {
     public void testSimpleNumber() throws Exception {
         JSONStreamReader parser = new JSONStreamReader(NUMBER_1);
         Assert.assertEquals(ParseState.DOCUMENT, parser.nextState());
-        Assert.assertEquals(ParseState.VALUE, parser.nextState());
+        Assert.assertEquals(ParseState.NUMBER_VALUE, parser.nextState());
         Assert.assertEquals(Double.valueOf(0.0d), parser.nextValue());
         Assert.assertEquals(ParseState.END_DOCUMENT, parser.nextState());
     }
@@ -403,7 +398,7 @@ public final class ParserTest {
     public void testSimpleNumberDouble() throws Exception {
         JSONStreamReader parser = new JSONStreamReader(NUMBER_1);
         Assert.assertEquals(ParseState.DOCUMENT, parser.nextState());
-        Assert.assertEquals(ParseState.VALUE, parser.nextState());
+        Assert.assertEquals(ParseState.NUMBER_VALUE, parser.nextState());
         Assert.assertEquals(0.0d, parser.nextDoubleValue(), 0.00000000001d);
         Assert.assertEquals(ParseState.END_DOCUMENT, parser.nextState());
 
@@ -414,7 +409,7 @@ public final class ParserTest {
     public void testSimpleNumberNumber() throws Exception {
         JSONStreamReader parser = new JSONStreamReader(NUMBER_1);
         Assert.assertEquals(ParseState.DOCUMENT, parser.nextState());
-        Assert.assertEquals(ParseState.VALUE, parser.nextState());
+        Assert.assertEquals(ParseState.NUMBER_VALUE, parser.nextState());
         Assert.assertEquals(Double.valueOf(0.0d), parser.nextNumberValue());
         Assert.assertEquals(ParseState.END_DOCUMENT, parser.nextState());
 
@@ -425,7 +420,7 @@ public final class ParserTest {
     public void testSimpleNumber2() throws Exception {
         JSONStreamReader parser = new JSONStreamReader(NUMBER_2);
         Assert.assertEquals(ParseState.DOCUMENT, parser.nextState());
-        Assert.assertEquals(ParseState.VALUE, parser.nextState());
+        Assert.assertEquals(ParseState.NUMBER_VALUE, parser.nextState());
         Assert.assertEquals(Integer.valueOf(42), parser.nextValue());
         Assert.assertEquals(ParseState.END_DOCUMENT, parser.nextState());
     }
@@ -434,7 +429,7 @@ public final class ParserTest {
     public void testSimpleNumber2TypedInt() throws Exception {
         JSONStreamReader parser = new JSONStreamReader(NUMBER_2);
         Assert.assertEquals(ParseState.DOCUMENT, parser.nextState());
-        Assert.assertEquals(ParseState.VALUE, parser.nextState());
+        Assert.assertEquals(ParseState.NUMBER_VALUE, parser.nextState());
         Assert.assertEquals(42, parser.nextIntValue());
         Assert.assertEquals(ParseState.END_DOCUMENT, parser.nextState());
     }
@@ -443,7 +438,7 @@ public final class ParserTest {
     public void testSimpleNumber2TypedLong() throws Exception {
         JSONStreamReader parser = new JSONStreamReader(NUMBER_2);
         Assert.assertEquals(ParseState.DOCUMENT, parser.nextState());
-        Assert.assertEquals(ParseState.VALUE, parser.nextState());
+        Assert.assertEquals(ParseState.NUMBER_VALUE, parser.nextState());
         Assert.assertEquals(42L, parser.nextLongValue());
         Assert.assertEquals(ParseState.END_DOCUMENT, parser.nextState());
     }
@@ -452,7 +447,7 @@ public final class ParserTest {
     public void testSimpleNumber2TypedDouble() throws Exception {
         JSONStreamReader parser = new JSONStreamReader(NUMBER_2);
         Assert.assertEquals(ParseState.DOCUMENT, parser.nextState());
-        Assert.assertEquals(ParseState.VALUE, parser.nextState());
+        Assert.assertEquals(ParseState.NUMBER_VALUE, parser.nextState());
         Assert.assertEquals(42.0d, parser.nextDoubleValue(), 0.00000000001d);
         Assert.assertEquals(ParseState.END_DOCUMENT, parser.nextState());
     }
@@ -461,7 +456,7 @@ public final class ParserTest {
     public void testSimpleNumber2Number() throws Exception {
         JSONStreamReader parser = new JSONStreamReader(NUMBER_2);
         Assert.assertEquals(ParseState.DOCUMENT, parser.nextState());
-        Assert.assertEquals(ParseState.VALUE, parser.nextState());
+        Assert.assertEquals(ParseState.NUMBER_VALUE, parser.nextState());
         Assert.assertEquals(Integer.valueOf(42), parser.nextNumberValue());
         Assert.assertEquals(ParseState.END_DOCUMENT, parser.nextState());
     }
@@ -470,7 +465,7 @@ public final class ParserTest {
     public void testSimpleNumber2BigInt() throws Exception {
         JSONStreamReader parser = new JSONStreamReader(NUMBER_2);
         Assert.assertEquals(ParseState.DOCUMENT, parser.nextState());
-        Assert.assertEquals(ParseState.VALUE, parser.nextState());
+        Assert.assertEquals(ParseState.NUMBER_VALUE, parser.nextState());
         Assert.assertEquals(new BigInteger("42"), parser.nextBigIntegerValue());
         Assert.assertEquals(ParseState.END_DOCUMENT, parser.nextState());
     }
@@ -479,7 +474,7 @@ public final class ParserTest {
     public void testSimpleNumber2BigDecimal() throws Exception {
         JSONStreamReader parser = new JSONStreamReader(NUMBER_2);
         Assert.assertEquals(ParseState.DOCUMENT, parser.nextState());
-        Assert.assertEquals(ParseState.VALUE, parser.nextState());
+        Assert.assertEquals(ParseState.NUMBER_VALUE, parser.nextState());
         Assert.assertEquals(new BigDecimal("42"), parser.nextBigDecimalValue());
         Assert.assertEquals(ParseState.END_DOCUMENT, parser.nextState());
     }
@@ -488,7 +483,7 @@ public final class ParserTest {
     public void testSimpleNumber3() throws Exception {
         JSONStreamReader parser = new JSONStreamReader(NUMBER_3);
         Assert.assertEquals(ParseState.DOCUMENT, parser.nextState());
-        Assert.assertEquals(ParseState.VALUE, parser.nextState());
+        Assert.assertEquals(ParseState.NUMBER_VALUE, parser.nextState());
         Assert.assertEquals(Integer.valueOf(-5), parser.nextValue());
         Assert.assertEquals(ParseState.END_DOCUMENT, parser.nextState());
     }
@@ -497,7 +492,7 @@ public final class ParserTest {
     public void testSimpleNumber3TypedInt() throws Exception {
         JSONStreamReader parser = new JSONStreamReader(NUMBER_3);
         Assert.assertEquals(ParseState.DOCUMENT, parser.nextState());
-        Assert.assertEquals(ParseState.VALUE, parser.nextState());
+        Assert.assertEquals(ParseState.NUMBER_VALUE, parser.nextState());
         Assert.assertEquals(-5, parser.nextIntValue());
         Assert.assertEquals(ParseState.END_DOCUMENT, parser.nextState());
     }
@@ -506,7 +501,7 @@ public final class ParserTest {
     public void testSimpleNumber3TypedLong() throws Exception {
         JSONStreamReader parser = new JSONStreamReader(NUMBER_3);
         Assert.assertEquals(ParseState.DOCUMENT, parser.nextState());
-        Assert.assertEquals(ParseState.VALUE, parser.nextState());
+        Assert.assertEquals(ParseState.NUMBER_VALUE, parser.nextState());
         Assert.assertEquals(-5L, parser.nextLongValue());
         Assert.assertEquals(ParseState.END_DOCUMENT, parser.nextState());
     }
@@ -515,7 +510,7 @@ public final class ParserTest {
     public void testSimpleNumber3Number() throws Exception {
         JSONStreamReader parser = new JSONStreamReader(NUMBER_3);
         Assert.assertEquals(ParseState.DOCUMENT, parser.nextState());
-        Assert.assertEquals(ParseState.VALUE, parser.nextState());
+        Assert.assertEquals(ParseState.NUMBER_VALUE, parser.nextState());
         Assert.assertEquals(Integer.valueOf(-5), parser.nextNumberValue());
         Assert.assertEquals(ParseState.END_DOCUMENT, parser.nextState());
     }
@@ -524,7 +519,7 @@ public final class ParserTest {
     public void testSimpleNumber3BigInt() throws Exception {
         JSONStreamReader parser = new JSONStreamReader(NUMBER_3);
         Assert.assertEquals(ParseState.DOCUMENT, parser.nextState());
-        Assert.assertEquals(ParseState.VALUE, parser.nextState());
+        Assert.assertEquals(ParseState.NUMBER_VALUE, parser.nextState());
         Assert.assertEquals(new BigInteger("-5"), parser.nextBigIntegerValue());
         Assert.assertEquals(ParseState.END_DOCUMENT, parser.nextState());
     }
@@ -533,7 +528,7 @@ public final class ParserTest {
     public void testSimpleNumber3BigDecimal() throws Exception {
         JSONStreamReader parser = new JSONStreamReader(NUMBER_3);
         Assert.assertEquals(ParseState.DOCUMENT, parser.nextState());
-        Assert.assertEquals(ParseState.VALUE, parser.nextState());
+        Assert.assertEquals(ParseState.NUMBER_VALUE, parser.nextState());
         Assert.assertEquals(new BigDecimal("-5"), parser.nextBigDecimalValue());
         Assert.assertEquals(ParseState.END_DOCUMENT, parser.nextState());
     }
@@ -542,7 +537,7 @@ public final class ParserTest {
     public void testSimpleNumber4() throws Exception {
         JSONStreamReader parser = new JSONStreamReader(NUMBER_4);
         Assert.assertEquals(ParseState.DOCUMENT, parser.nextState());
-        Assert.assertEquals(ParseState.VALUE, parser.nextState());
+        Assert.assertEquals(ParseState.NUMBER_VALUE, parser.nextState());
         Assert.assertEquals(Double.valueOf(3.14159d), parser.nextValue());
         Assert.assertEquals(ParseState.END_DOCUMENT, parser.nextState());
     }
@@ -551,7 +546,7 @@ public final class ParserTest {
     public void testSimpleNumber4TypedDouble() throws Exception {
         JSONStreamReader parser = new JSONStreamReader(NUMBER_4);
         Assert.assertEquals(ParseState.DOCUMENT, parser.nextState());
-        Assert.assertEquals(ParseState.VALUE, parser.nextState());
+        Assert.assertEquals(ParseState.NUMBER_VALUE, parser.nextState());
         Assert.assertEquals(3.14159d, parser.nextDoubleValue(), 0.00000000001d);
         Assert.assertEquals(ParseState.END_DOCUMENT, parser.nextState());
     }
@@ -560,7 +555,7 @@ public final class ParserTest {
     public void testSimpleNumber4TypedNumber() throws Exception {
         JSONStreamReader parser = new JSONStreamReader(NUMBER_4);
         Assert.assertEquals(ParseState.DOCUMENT, parser.nextState());
-        Assert.assertEquals(ParseState.VALUE, parser.nextState());
+        Assert.assertEquals(ParseState.NUMBER_VALUE, parser.nextState());
         Assert.assertEquals(Double.valueOf(3.14159d), parser.nextNumberValue());
         Assert.assertEquals(ParseState.END_DOCUMENT, parser.nextState());
     }
@@ -569,7 +564,7 @@ public final class ParserTest {
     public void testSimpleNumber4TypedBigDecimal() throws Exception {
         JSONStreamReader parser = new JSONStreamReader(NUMBER_4);
         Assert.assertEquals(ParseState.DOCUMENT, parser.nextState());
-        Assert.assertEquals(ParseState.VALUE, parser.nextState());
+        Assert.assertEquals(ParseState.NUMBER_VALUE, parser.nextState());
         Assert.assertEquals(new BigDecimal("3.14159"), parser.nextBigDecimalValue());
         Assert.assertEquals(ParseState.END_DOCUMENT, parser.nextState());
     }
@@ -578,7 +573,7 @@ public final class ParserTest {
     public void testSimpleNumber5() throws Exception {
         JSONStreamReader parser = new JSONStreamReader(NUMBER_5);
         Assert.assertEquals(ParseState.DOCUMENT, parser.nextState());
-        Assert.assertEquals(ParseState.VALUE, parser.nextState());
+        Assert.assertEquals(ParseState.NUMBER_VALUE, parser.nextState());
         Assert.assertEquals(Double.valueOf(2e+10d), parser.nextValue());
         Assert.assertEquals(ParseState.END_DOCUMENT, parser.nextState());
     }
@@ -587,7 +582,7 @@ public final class ParserTest {
     public void testSimpleNumber5TypedDouble() throws Exception {
         JSONStreamReader parser = new JSONStreamReader(NUMBER_5);
         Assert.assertEquals(ParseState.DOCUMENT, parser.nextState());
-        Assert.assertEquals(ParseState.VALUE, parser.nextState());
+        Assert.assertEquals(ParseState.NUMBER_VALUE, parser.nextState());
         Assert.assertEquals(2e+10d, parser.nextDoubleValue(), 0.1d);
         Assert.assertEquals(ParseState.END_DOCUMENT, parser.nextState());
     }
@@ -596,7 +591,7 @@ public final class ParserTest {
     public void testSimpleNumber5TypedNumber() throws Exception {
         JSONStreamReader parser = new JSONStreamReader(NUMBER_5);
         Assert.assertEquals(ParseState.DOCUMENT, parser.nextState());
-        Assert.assertEquals(ParseState.VALUE, parser.nextState());
+        Assert.assertEquals(ParseState.NUMBER_VALUE, parser.nextState());
         Assert.assertEquals(Double.valueOf(2e+10d), parser.nextNumberValue());
         Assert.assertEquals(ParseState.END_DOCUMENT, parser.nextState());
     }
@@ -605,7 +600,7 @@ public final class ParserTest {
     public void testSimpleNumber5TypedBigDecimal() throws Exception {
         JSONStreamReader parser = new JSONStreamReader(NUMBER_5);
         Assert.assertEquals(ParseState.DOCUMENT, parser.nextState());
-        Assert.assertEquals(ParseState.VALUE, parser.nextState());
+        Assert.assertEquals(ParseState.NUMBER_VALUE, parser.nextState());
         Assert.assertEquals(new BigDecimal("2e+10"), parser.nextBigDecimalValue());
         Assert.assertEquals(ParseState.END_DOCUMENT, parser.nextState());
     }
@@ -618,31 +613,31 @@ public final class ParserTest {
         Assert.assertEquals(ParseState.OBJECT, parser.nextState());
         Assert.assertEquals(ParseState.KEY, parser.nextState());
         Assert.assertEquals("trueKey", parser.nextKey());
-        Assert.assertEquals(ParseState.VALUE, parser.nextState());
+        Assert.assertEquals(ParseState.BOOLEAN_VALUE, parser.nextState());
         Assert.assertTrue(parser.nextBooleanValue());
         Assert.assertEquals(ParseState.KEY, parser.nextState());
         Assert.assertEquals("falseKey", parser.nextKey());
-        Assert.assertEquals(ParseState.VALUE, parser.nextState());
+        Assert.assertEquals(ParseState.BOOLEAN_VALUE, parser.nextState());
         Assert.assertFalse(parser.nextBooleanValue());
         Assert.assertEquals(ParseState.KEY, parser.nextState());
         Assert.assertEquals("nullKey", parser.nextKey());
-        Assert.assertEquals(ParseState.VALUE, parser.nextState());
+        Assert.assertEquals(ParseState.NULL_VALUE, parser.nextState());
         Assert.assertEquals(JSONObject.NULL, parser.nextValue());
         Assert.assertEquals(ParseState.KEY, parser.nextState());
         Assert.assertEquals("stringKey", parser.nextKey());
-        Assert.assertEquals(ParseState.VALUE, parser.nextState());
+        Assert.assertEquals(ParseState.STRING_VALUE, parser.nextState());
         Assert.assertEquals("hello world!", parser.nextStringValue());
         Assert.assertEquals(ParseState.KEY, parser.nextState());
         Assert.assertEquals("escapeStringKey", parser.nextKey());
-        Assert.assertEquals(ParseState.VALUE, parser.nextState());
+        Assert.assertEquals(ParseState.STRING_VALUE, parser.nextState());
         Assert.assertEquals("h\be\tllo w\u1234orld!", parser.nextStringValue());
         Assert.assertEquals(ParseState.KEY, parser.nextState());
         Assert.assertEquals("intKey", parser.nextKey());
-        Assert.assertEquals(ParseState.VALUE, parser.nextState());
+        Assert.assertEquals(ParseState.NUMBER_VALUE, parser.nextState());
         Assert.assertEquals(42, parser.nextIntValue());
         Assert.assertEquals(ParseState.KEY, parser.nextState());
         Assert.assertEquals("doubleKey", parser.nextKey());
-        Assert.assertEquals(ParseState.VALUE, parser.nextState());
+        Assert.assertEquals(ParseState.NUMBER_VALUE, parser.nextState());
         Assert.assertEquals(-23.45e67d, parser.nextDoubleValue(), 1.0d);
         Assert.assertEquals(ParseState.END_OBJECT, parser.nextState());
         Assert.assertEquals(ParseState.END_DOCUMENT, parser.nextState());
@@ -656,56 +651,56 @@ public final class ParserTest {
         Assert.assertEquals(ParseState.OBJECT, parser.nextState());
         Assert.assertEquals(ParseState.KEY, parser.nextState());
         Assert.assertEquals("trueKey", parser.nextKey());
-        Assert.assertEquals(ParseState.VALUE, parser.nextState());
+        Assert.assertEquals(ParseState.BOOLEAN_VALUE, parser.nextState());
         Assert.assertTrue(parser.nextBooleanValue());
         Assert.assertEquals(ParseState.KEY, parser.nextState());
         Assert.assertEquals("falseKey", parser.nextKey());
-        Assert.assertEquals(ParseState.VALUE, parser.nextState());
+        Assert.assertEquals(ParseState.BOOLEAN_VALUE, parser.nextState());
         Assert.assertFalse(parser.nextBooleanValue());
         Assert.assertEquals(ParseState.KEY, parser.nextState());
         Assert.assertEquals("trueStrKey", parser.nextKey());
-        Assert.assertEquals(ParseState.VALUE, parser.nextState());
+        Assert.assertEquals(ParseState.STRING_VALUE, parser.nextState());
         Assert.assertEquals("true", parser.nextStringValue());
         Assert.assertEquals(ParseState.KEY, parser.nextState());
         Assert.assertEquals("falseStrKey", parser.nextKey());
-        Assert.assertEquals(ParseState.VALUE, parser.nextState());
+        Assert.assertEquals(ParseState.STRING_VALUE, parser.nextState());
         Assert.assertEquals("false", parser.nextStringValue());
         Assert.assertEquals(ParseState.KEY, parser.nextState());
         Assert.assertEquals("stringKey", parser.nextKey());
-        Assert.assertEquals(ParseState.VALUE, parser.nextState());
+        Assert.assertEquals(ParseState.STRING_VALUE, parser.nextState());
         Assert.assertEquals("hello world!", parser.nextStringValue());
         Assert.assertEquals(ParseState.KEY, parser.nextState());
         Assert.assertEquals("intKey", parser.nextKey());
-        Assert.assertEquals(ParseState.VALUE, parser.nextState());
+        Assert.assertEquals(ParseState.NUMBER_VALUE, parser.nextState());
         Assert.assertEquals(42, parser.nextIntValue());
         Assert.assertEquals(ParseState.KEY, parser.nextState());
         Assert.assertEquals("intStrKey", parser.nextKey());
-        Assert.assertEquals(ParseState.VALUE, parser.nextState());
+        Assert.assertEquals(ParseState.STRING_VALUE, parser.nextState());
         Assert.assertEquals("43", parser.nextStringValue());
         Assert.assertEquals(ParseState.KEY, parser.nextState());
         Assert.assertEquals("longKey", parser.nextKey());
-        Assert.assertEquals(ParseState.VALUE, parser.nextState());
+        Assert.assertEquals(ParseState.NUMBER_VALUE, parser.nextState());
         Assert.assertEquals(1234567890123456789L, parser.nextLongValue());
         Assert.assertEquals(ParseState.KEY, parser.nextState());
         Assert.assertEquals("longStrKey", parser.nextKey());
-        Assert.assertEquals(ParseState.VALUE, parser.nextState());
+        Assert.assertEquals(ParseState.STRING_VALUE, parser.nextState());
         Assert.assertEquals("987654321098765432", parser.nextStringValue());
         Assert.assertEquals(ParseState.KEY, parser.nextState());
         Assert.assertEquals("doubleKey", parser.nextKey());
-        Assert.assertEquals(ParseState.VALUE, parser.nextState());
+        Assert.assertEquals(ParseState.NUMBER_VALUE, parser.nextState());
         Assert.assertEquals(-23.45e7, parser.nextDoubleValue(), 1.0d);
         Assert.assertEquals(ParseState.KEY, parser.nextState());
         Assert.assertEquals("doubleStrKey", parser.nextKey());
-        Assert.assertEquals(ParseState.VALUE, parser.nextState());
+        Assert.assertEquals(ParseState.STRING_VALUE, parser.nextState());
         Assert.assertEquals("00001.000", parser.nextStringValue());
         Assert.assertEquals(ParseState.KEY, parser.nextState());
         Assert.assertEquals("arrayKey", parser.nextKey());
         Assert.assertEquals(ParseState.ARRAY, parser.nextState());
-        Assert.assertEquals(ParseState.VALUE, parser.nextState());
+        Assert.assertEquals(ParseState.NUMBER_VALUE, parser.nextState());
         Assert.assertEquals(0, parser.nextIntValue());
-        Assert.assertEquals(ParseState.VALUE, parser.nextState());
+        Assert.assertEquals(ParseState.NUMBER_VALUE, parser.nextState());
         Assert.assertEquals(1, parser.nextIntValue());
-        Assert.assertEquals(ParseState.VALUE, parser.nextState());
+        Assert.assertEquals(ParseState.NUMBER_VALUE, parser.nextState());
         Assert.assertEquals(2, parser.nextIntValue());
         Assert.assertEquals(ParseState.END_ARRAY, parser.nextState());
         Assert.assertEquals(ParseState.KEY, parser.nextState());
@@ -713,7 +708,7 @@ public final class ParserTest {
         Assert.assertEquals(ParseState.OBJECT, parser.nextState());
         Assert.assertEquals(ParseState.KEY, parser.nextState());
         Assert.assertEquals("myKey", parser.nextKey());
-        Assert.assertEquals(ParseState.VALUE, parser.nextState());
+        Assert.assertEquals(ParseState.STRING_VALUE, parser.nextState());
         Assert.assertEquals("myVal", parser.nextStringValue());
         Assert.assertEquals(ParseState.END_OBJECT, parser.nextState());
         Assert.assertEquals(ParseState.END_OBJECT, parser.nextState());
@@ -728,19 +723,19 @@ public final class ParserTest {
         Assert.assertEquals(ParseState.OBJECT, parser.nextState());
         Assert.assertEquals(ParseState.KEY, parser.nextState());
         Assert.assertEquals("numberWithDecimals", parser.nextKey());
-        Assert.assertEquals(ParseState.VALUE, parser.nextState());
+        Assert.assertEquals(ParseState.NUMBER_VALUE, parser.nextState());
         Assert.assertEquals(parser.nextDoubleValue(), 299792.458d, 0.001d);
         Assert.assertEquals(ParseState.KEY, parser.nextState());
         Assert.assertEquals("largeNumber", parser.nextKey());
-        Assert.assertEquals(ParseState.VALUE, parser.nextState());
+        Assert.assertEquals(ParseState.NUMBER_VALUE, parser.nextState());
         Assert.assertEquals(new BigInteger("12345678901234567890"), parser.nextBigIntegerValue());
         Assert.assertEquals(ParseState.KEY, parser.nextState());
         Assert.assertEquals("preciseNumber", parser.nextKey());
-        Assert.assertEquals(ParseState.VALUE, parser.nextState());
+        Assert.assertEquals(ParseState.NUMBER_VALUE, parser.nextState());
         Assert.assertEquals(0.2d, parser.nextDoubleValue(), 0.001d);
         Assert.assertEquals(ParseState.KEY, parser.nextState());
         Assert.assertEquals("largeExponent", parser.nextKey());
-        Assert.assertEquals(ParseState.VALUE, parser.nextState());
+        Assert.assertEquals(ParseState.NUMBER_VALUE, parser.nextState());
         Assert.assertEquals(new BigDecimal("-23.45e2327"), parser.nextBigDecimalValue());
         Assert.assertEquals(ParseState.END_OBJECT, parser.nextState());
         Assert.assertEquals(ParseState.END_DOCUMENT, parser.nextState());
@@ -755,25 +750,25 @@ public final class ParserTest {
         Assert.assertEquals(ParseState.OBJECT, parser.nextState());
         Assert.assertEquals(ParseState.KEY, parser.nextState());
         Assert.assertEquals("numberWithDecimals", parser.nextKey());
-        Assert.assertEquals(ParseState.VALUE, parser.nextState());
+        Assert.assertEquals(ParseState.NUMBER_VALUE, parser.nextState());
         parser.appendNextNumberValue(builder);
         Assert.assertEquals("299792.457999999984", builder.toString());
         builder.delete(0, builder.length());
         Assert.assertEquals(ParseState.KEY, parser.nextState());
         Assert.assertEquals("largeNumber", parser.nextKey());
-        Assert.assertEquals(ParseState.VALUE, parser.nextState());
+        Assert.assertEquals(ParseState.NUMBER_VALUE, parser.nextState());
         parser.appendNextNumberValue(builder);
         Assert.assertEquals("12345678901234567890", builder.toString());
         builder.delete(0, builder.length());
         Assert.assertEquals(ParseState.KEY, parser.nextState());
         Assert.assertEquals("preciseNumber", parser.nextKey());
-        Assert.assertEquals(ParseState.VALUE, parser.nextState());
+        Assert.assertEquals(ParseState.NUMBER_VALUE, parser.nextState());
         parser.appendNextNumberValue(builder);
         Assert.assertEquals("0.2000000000000000111", builder.toString());
         builder.delete(0, builder.length());
         Assert.assertEquals(ParseState.KEY, parser.nextState());
         Assert.assertEquals("largeExponent", parser.nextKey());
-        Assert.assertEquals(ParseState.VALUE, parser.nextState());
+        Assert.assertEquals(ParseState.NUMBER_VALUE, parser.nextState());
         parser.appendNextNumberValue(builder);
         Assert.assertEquals("-23.45e2327", builder.toString());
         builder.delete(0, builder.length());
@@ -787,49 +782,49 @@ public final class ParserTest {
 
         Assert.assertEquals(ParseState.DOCUMENT, parser.nextState());
         Assert.assertEquals(ParseState.ARRAY, parser.nextState());
-        Assert.assertEquals(ParseState.VALUE, parser.nextState());
+        Assert.assertEquals(ParseState.BOOLEAN_VALUE, parser.nextState());
         Assert.assertTrue(parser.nextBooleanValue());
-        Assert.assertEquals(ParseState.VALUE, parser.nextState());
+        Assert.assertEquals(ParseState.BOOLEAN_VALUE, parser.nextState());
         Assert.assertFalse(parser.nextBooleanValue());
-        Assert.assertEquals(ParseState.VALUE, parser.nextState());
+        Assert.assertEquals(ParseState.STRING_VALUE, parser.nextState());
         Assert.assertEquals("true", parser.nextStringValue());
-        Assert.assertEquals(ParseState.VALUE, parser.nextState());
+        Assert.assertEquals(ParseState.STRING_VALUE, parser.nextState());
         Assert.assertEquals("false", parser.nextStringValue());
-        Assert.assertEquals(ParseState.VALUE, parser.nextState());
+        Assert.assertEquals(ParseState.STRING_VALUE, parser.nextState());
         Assert.assertEquals("hello", parser.nextStringValue());
-        Assert.assertEquals(ParseState.VALUE, parser.nextState());
+        Assert.assertEquals(ParseState.NUMBER_VALUE, parser.nextState());
         Assert.assertEquals(23.45e-4d, parser.nextDoubleValue(), 0.0000001d);
-        Assert.assertEquals(ParseState.VALUE, parser.nextState());
+        Assert.assertEquals(ParseState.STRING_VALUE, parser.nextState());
         Assert.assertEquals("23.45", parser.nextStringValue());
-        Assert.assertEquals(ParseState.VALUE, parser.nextState());
+        Assert.assertEquals(ParseState.NUMBER_VALUE, parser.nextState());
         Assert.assertEquals(42, parser.nextIntValue());
-        Assert.assertEquals(ParseState.VALUE, parser.nextState());
+        Assert.assertEquals(ParseState.STRING_VALUE, parser.nextState());
         Assert.assertEquals("43", parser.nextStringValue());
         Assert.assertEquals(ParseState.ARRAY, parser.nextState());
-        Assert.assertEquals(ParseState.VALUE, parser.nextState());
+        Assert.assertEquals(ParseState.STRING_VALUE, parser.nextState());
         Assert.assertEquals("world", parser.nextStringValue());
         Assert.assertEquals(ParseState.END_ARRAY, parser.nextState());
         Assert.assertEquals(ParseState.OBJECT, parser.nextState());
         Assert.assertEquals(ParseState.KEY, parser.nextState());
         Assert.assertEquals("key1", parser.nextKey());
-        Assert.assertEquals(ParseState.VALUE, parser.nextState());
+        Assert.assertEquals(ParseState.STRING_VALUE, parser.nextState());
         Assert.assertEquals("value1", parser.nextStringValue());
         Assert.assertEquals(ParseState.KEY, parser.nextState());
         Assert.assertEquals("key2", parser.nextKey());
-        Assert.assertEquals(ParseState.VALUE, parser.nextState());
+        Assert.assertEquals(ParseState.STRING_VALUE, parser.nextState());
         Assert.assertEquals("value2", parser.nextStringValue());
         Assert.assertEquals(ParseState.KEY, parser.nextState());
         Assert.assertEquals("key3", parser.nextKey());
-        Assert.assertEquals(ParseState.VALUE, parser.nextState());
+        Assert.assertEquals(ParseState.STRING_VALUE, parser.nextState());
         Assert.assertEquals("value3", parser.nextStringValue());
         Assert.assertEquals(ParseState.KEY, parser.nextState());
         Assert.assertEquals("key4", parser.nextKey());
-        Assert.assertEquals(ParseState.VALUE, parser.nextState());
+        Assert.assertEquals(ParseState.STRING_VALUE, parser.nextState());
         Assert.assertEquals("value4", parser.nextStringValue());
         Assert.assertEquals(ParseState.END_OBJECT, parser.nextState());
-        Assert.assertEquals(ParseState.VALUE, parser.nextState());
+        Assert.assertEquals(ParseState.NUMBER_VALUE, parser.nextState());
         Assert.assertEquals(0L, parser.nextLongValue());
-        Assert.assertEquals(ParseState.VALUE, parser.nextState());
+        Assert.assertEquals(ParseState.STRING_VALUE, parser.nextState());
         Assert.assertEquals("-1", parser.nextStringValue());
         Assert.assertEquals(ParseState.END_ARRAY, parser.nextState());
         Assert.assertEquals(ParseState.END_DOCUMENT, parser.nextState());
