@@ -190,6 +190,24 @@ public final class ParserTest {
     }
 
     @Test
+    public void testObjectSkip2() throws Exception {
+        JSONStreamReader parser = new JSONStreamReader(OBJECT_5);
+        Assert.assertEquals(ParseState.DOCUMENT, parser.nextState());
+        Assert.assertEquals(ParseState.OBJECT, parser.nextState());
+        Assert.assertEquals(ParseState.KEY, parser.nextState());
+        Assert.assertEquals("key", parser.nextKey());
+        Assert.assertEquals(ParseState.OBJECT, parser.nextState());
+        Assert.assertEquals(ParseState.KEY, parser.nextState());
+        Assert.assertEquals(ParseState.END_OBJECT, parser.skipToEndStructure());
+        Assert.assertEquals(ParseState.KEY, parser.nextState());
+        Assert.assertEquals("key2", parser.nextKey());
+        Assert.assertEquals(ParseState.OBJECT, parser.nextState());
+        Assert.assertEquals(ParseState.END_OBJECT, parser.skipToEndStructure());
+        Assert.assertEquals(ParseState.END_OBJECT, parser.nextState());
+        Assert.assertEquals(ParseState.END_DOCUMENT, parser.nextState());
+    }
+
+    @Test
     public void testSimpleArray() throws Exception {
         JSONStreamReader parser = new JSONStreamReader(ARRAY_1);
         Assert.assertEquals(ParseState.DOCUMENT, parser.nextState());
@@ -234,6 +252,25 @@ public final class ParserTest {
         Assert.assertEquals(ParseState.ARRAY, parser.nextState());
         Assert.assertEquals(ParseState.END_ARRAY, parser.skipToEndStructure());
         Assert.assertEquals(ParseState.END_ARRAY, parser.nextState());
+        Assert.assertEquals(ParseState.END_DOCUMENT, parser.nextState());
+    }
+
+    @Test
+    public void testArraySkip() throws Exception {
+        JSONStreamReader parser = new JSONStreamReader(ARRAY_3);
+        Assert.assertEquals(ParseState.DOCUMENT, parser.nextState());
+        Assert.assertEquals(ParseState.ARRAY, parser.nextState());
+        Assert.assertEquals(ParseState.END_ARRAY, parser.skipToEndStructure());
+        Assert.assertEquals(ParseState.END_DOCUMENT, parser.nextState());
+    }
+
+    @Test
+    public void testArraySkip2() throws Exception {
+        JSONStreamReader parser = new JSONStreamReader(ARRAY_3);
+        Assert.assertEquals(ParseState.DOCUMENT, parser.nextState());
+        Assert.assertEquals(ParseState.ARRAY, parser.nextState());
+        Assert.assertEquals(ParseState.VALUE, parser.nextState());
+        Assert.assertEquals(ParseState.END_ARRAY, parser.skipToEndStructure());
         Assert.assertEquals(ParseState.END_DOCUMENT, parser.nextState());
     }
 
