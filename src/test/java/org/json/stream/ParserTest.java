@@ -181,11 +181,11 @@ public final class ParserTest {
         Assert.assertEquals(ParseState.KEY, parser.nextState());
         Assert.assertEquals("key", parser.nextKey());
         Assert.assertEquals(ParseState.OBJECT, parser.nextState());
-        Assert.assertEquals(ParseState.END_OBJECT, parser.skipToEndObject());
+        Assert.assertEquals(ParseState.END_OBJECT, parser.skipToEndStructure());
         Assert.assertEquals(ParseState.KEY, parser.nextState());
         Assert.assertEquals("key2", parser.nextKey());
         Assert.assertEquals(ParseState.OBJECT, parser.nextState());
-        Assert.assertEquals(ParseState.END_OBJECT, parser.skipToEndObject());
+        Assert.assertEquals(ParseState.END_OBJECT, parser.skipToEndStructure());
         Assert.assertEquals(ParseState.END_OBJECT, parser.nextState());
         Assert.assertEquals(ParseState.END_DOCUMENT, parser.nextState());
     }
@@ -237,7 +237,7 @@ public final class ParserTest {
         Assert.assertEquals(ParseState.DOCUMENT, parser.nextState());
         Assert.assertEquals(ParseState.ARRAY, parser.nextState());
         Assert.assertEquals(ParseState.ARRAY, parser.nextState());
-        Assert.assertEquals(ParseState.END_ARRAY, parser.skipToEndObject());
+        Assert.assertEquals(ParseState.END_ARRAY, parser.skipToEndStructure());
         Assert.assertEquals(ParseState.END_ARRAY, parser.nextState());
         Assert.assertEquals(ParseState.END_DOCUMENT, parser.nextState());
     }
@@ -326,6 +326,23 @@ public final class ParserTest {
         Assert.assertEquals(ParseState.END_DOCUMENT, parser.nextState());
 
         Assert.assertEquals(3300, builder.length());
+    }
+
+    @Test
+    public void testSkipString() throws Exception {
+        JSONStreamReader parser = new JSONStreamReader(STRING_5);
+
+        Assert.assertEquals(ParseState.DOCUMENT, parser.nextState());
+        Assert.assertEquals(ParseState.VALUE, parser.nextState());
+        Assert.assertEquals(ParseState.END_DOCUMENT, parser.skipToEndStructure());
+    }
+
+    @Test
+    public void testSkipString2() throws Exception {
+        JSONStreamReader parser = new JSONStreamReader(STRING_5);
+
+        Assert.assertEquals(ParseState.DOCUMENT, parser.nextState());
+        Assert.assertEquals(ParseState.END_DOCUMENT, parser.skipToEndStructure());
     }
 
     @Test
@@ -725,6 +742,41 @@ public final class ParserTest {
         Assert.assertEquals("largeExponent", parser.nextKey());
         Assert.assertEquals(ParseState.VALUE, parser.nextState());
         Assert.assertEquals(new BigDecimal("-23.45e2327"), parser.nextBigDecimalValue());
+        Assert.assertEquals(ParseState.END_OBJECT, parser.nextState());
+        Assert.assertEquals(ParseState.END_DOCUMENT, parser.nextState());
+    }
+
+    @Test
+    public void testObjectTest3Append() throws Exception {
+        JSONStreamReader parser = new JSONStreamReader(new StringReader(OBJECT_TEST_3));
+        StringBuilder builder = new StringBuilder();
+
+        Assert.assertEquals(ParseState.DOCUMENT, parser.nextState());
+        Assert.assertEquals(ParseState.OBJECT, parser.nextState());
+        Assert.assertEquals(ParseState.KEY, parser.nextState());
+        Assert.assertEquals("numberWithDecimals", parser.nextKey());
+        Assert.assertEquals(ParseState.VALUE, parser.nextState());
+        parser.appendNextNumberValue(builder);
+        Assert.assertEquals("299792.457999999984", builder.toString());
+        builder.delete(0, builder.length());
+        Assert.assertEquals(ParseState.KEY, parser.nextState());
+        Assert.assertEquals("largeNumber", parser.nextKey());
+        Assert.assertEquals(ParseState.VALUE, parser.nextState());
+        parser.appendNextNumberValue(builder);
+        Assert.assertEquals("12345678901234567890", builder.toString());
+        builder.delete(0, builder.length());
+        Assert.assertEquals(ParseState.KEY, parser.nextState());
+        Assert.assertEquals("preciseNumber", parser.nextKey());
+        Assert.assertEquals(ParseState.VALUE, parser.nextState());
+        parser.appendNextNumberValue(builder);
+        Assert.assertEquals("0.2000000000000000111", builder.toString());
+        builder.delete(0, builder.length());
+        Assert.assertEquals(ParseState.KEY, parser.nextState());
+        Assert.assertEquals("largeExponent", parser.nextKey());
+        Assert.assertEquals(ParseState.VALUE, parser.nextState());
+        parser.appendNextNumberValue(builder);
+        Assert.assertEquals("-23.45e2327", builder.toString());
+        builder.delete(0, builder.length());
         Assert.assertEquals(ParseState.END_OBJECT, parser.nextState());
         Assert.assertEquals(ParseState.END_DOCUMENT, parser.nextState());
     }
