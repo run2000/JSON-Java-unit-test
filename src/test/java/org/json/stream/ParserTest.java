@@ -269,7 +269,7 @@ public final class ParserTest {
         JSONStreamReader parser = new JSONStreamReader(ARRAY_3);
         Assert.assertEquals(ParseState.DOCUMENT, parser.nextState());
         Assert.assertEquals(ParseState.ARRAY, parser.nextState());
-        Assert.assertEquals(ParseState.VALUE, parser.nextState());
+        Assert.assertEquals(ParseState.STRING_VALUE, parser.nextState());
         Assert.assertEquals(ParseState.END_ARRAY, parser.skipToEndStructure());
         Assert.assertEquals(ParseState.END_DOCUMENT, parser.nextState());
     }
