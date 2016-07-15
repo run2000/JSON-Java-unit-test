@@ -424,6 +424,15 @@ public final class ParserTest {
     }
 
     @Test
+    public void testSimpleNullTyped() throws Exception {
+        JSONStreamReader parser = new JSONStreamReader(NULL_1);
+        Assert.assertEquals(ParseState.DOCUMENT, parser.nextState());
+        Assert.assertEquals(ParseState.NULL_VALUE, parser.nextState());
+        Assert.assertSame(JSONObject.NULL, parser.nextNullValue());
+        Assert.assertEquals(ParseState.END_DOCUMENT, parser.nextState());
+    }
+
+    @Test
     public void testSimpleNumber() throws Exception {
         JSONStreamReader parser = new JSONStreamReader(NUMBER_1);
         Assert.assertEquals(ParseState.DOCUMENT, parser.nextState());
