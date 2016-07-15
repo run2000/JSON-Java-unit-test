@@ -157,10 +157,18 @@ public final class ParserTest {
         JSONStreamReader parser = new JSONStreamReader(OBJECT_4);
         Assert.assertEquals(ParseState.DOCUMENT, parser.nextState());
         Assert.assertEquals(ParseState.OBJECT, parser.nextState());
+        Assert.assertTrue(parser.currentState().isBeginStructure());
+        Assert.assertFalse(parser.currentState().isEndStructure());
         Assert.assertEquals(ParseState.KEY, parser.nextState());
+        Assert.assertFalse(parser.currentState().isBeginStructure());
+        Assert.assertFalse(parser.currentState().isEndStructure());
         Assert.assertEquals("key", parser.nextKey());
         Assert.assertEquals(ParseState.OBJECT, parser.nextState());
+        Assert.assertTrue(parser.currentState().isBeginStructure());
+        Assert.assertFalse(parser.currentState().isEndStructure());
         Assert.assertEquals(ParseState.END_OBJECT, parser.nextState());
+        Assert.assertFalse(parser.currentState().isBeginStructure());
+        Assert.assertTrue(parser.currentState().isEndStructure());
         Assert.assertEquals(ParseState.KEY, parser.nextState());
         Assert.assertEquals("key2", parser.nextKey());
         Assert.assertEquals(ParseState.ARRAY, parser.nextState());
