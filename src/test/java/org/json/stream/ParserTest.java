@@ -1,5 +1,6 @@
 package org.json.stream;
 
+import org.json.JSONArray;
 import org.json.JSONObject;
 import org.json.stream.JSONStreamReader.ParseState;
 import org.junit.Assert;
@@ -865,5 +866,44 @@ public final class ParserTest {
         Assert.assertEquals("-1", parser.nextStringValue());
         Assert.assertEquals(ParseState.END_ARRAY, parser.nextState());
         Assert.assertEquals(ParseState.END_DOCUMENT, parser.nextState());
+    }
+
+    @Test
+    public void testSubtree1() throws Exception {
+        JSONStreamReader parser = new JSONStreamReader(ARRAY_4);
+        JSONArray firstArray = null;
+
+        while(parser.hasNext()) {
+            ParseState state = parser.nextState();
+            if((state == ParseState.ARRAY) && (parser.getStackDepth() == 2)) {
+                firstArray = JSONObjectBuilder.buildArraySubTree(parser);
+                break;
+            }
+        }
+
+        Assert.assertNotNull(firstArray);
+        Assert.assertEquals(2, firstArray.length());
+        Assert.assertNotNull(firstArray.getJSONObject(0));
+        Assert.assertTrue(firstArray.getJSONObject(0).has("key"));
+        Assert.assertFalse(firstArray.getBoolean(1));
+    }
+
+    @Test
+    public void testSubtree2() throws Exception {
+        JSONStreamReader parser = new JSONStreamReader(OBJECT_5);
+        JSONObject firstObject = null;
+
+        while(parser.hasNext()) {
+            ParseState state = parser.nextState();
+            if((state == ParseState.OBJECT) && (parser.getStackDepth() == 2)) {
+                firstObject = JSONObjectBuilder.buildObjectSubTree(parser);
+                break;
+            }
+        }
+
+        Assert.assertNotNull(firstObject);
+        Assert.assertEquals(2, firstObject.length());
+        Assert.assertNotNull(firstObject.get("a"));
+        Assert.assertTrue(firstObject.has("b"));
     }
 }
