@@ -156,6 +156,7 @@ public final class ParserTest {
     public void testObject3() throws Exception {
         JSONStreamReader parser = new JSONStreamReader(OBJECT_4);
         Assert.assertEquals(ParseState.DOCUMENT, parser.nextState());
+        Assert.assertTrue(parser.currentState().isBeginStructure());
         Assert.assertEquals(ParseState.OBJECT, parser.nextState());
         Assert.assertTrue(parser.currentState().isBeginStructure());
         Assert.assertFalse(parser.currentState().isEndStructure());
@@ -172,13 +173,78 @@ public final class ParserTest {
         Assert.assertEquals(ParseState.KEY, parser.nextState());
         Assert.assertEquals("key2", parser.nextKey());
         Assert.assertEquals(ParseState.ARRAY, parser.nextState());
+        Assert.assertTrue(parser.currentState().isBeginStructure());
         Assert.assertEquals(ParseState.NUMBER_VALUE, parser.nextState());
         Assert.assertEquals(Integer.valueOf(1), parser.nextValue());
         Assert.assertEquals(ParseState.BOOLEAN_VALUE, parser.nextState());
         Assert.assertEquals(Boolean.TRUE, parser.nextValue());
         Assert.assertEquals(ParseState.END_ARRAY, parser.nextState());
+        Assert.assertTrue(parser.currentState().isEndStructure());
         Assert.assertEquals(ParseState.END_OBJECT, parser.nextState());
+        Assert.assertTrue(parser.currentState().isEndStructure());
         Assert.assertEquals(ParseState.END_DOCUMENT, parser.nextState());
+        Assert.assertTrue(parser.currentState().isEndStructure());
+    }
+
+    @Test
+    public void testObject4() throws Exception {
+        JSONStreamReader parser = new JSONStreamReader(OBJECT_5);
+        Assert.assertEquals(ParseState.DOCUMENT, parser.nextState());
+        Assert.assertTrue(parser.currentState().isDocumentDelimiter());
+        Assert.assertFalse(parser.currentState().isObjectDelimiter());
+        Assert.assertFalse(parser.currentState().isArrayDelimiter());
+        Assert.assertEquals(ParseState.OBJECT, parser.nextState());
+        Assert.assertFalse(parser.currentState().isDocumentDelimiter());
+        Assert.assertTrue(parser.currentState().isObjectDelimiter());
+        Assert.assertFalse(parser.currentState().isArrayDelimiter());
+        Assert.assertEquals(ParseState.KEY, parser.nextState());
+        Assert.assertTrue(parser.currentState().isText());
+        Assert.assertEquals("key", parser.nextKey());
+        Assert.assertEquals(ParseState.OBJECT, parser.nextState());
+        Assert.assertFalse(parser.currentState().isDocumentDelimiter());
+        Assert.assertTrue(parser.currentState().isObjectDelimiter());
+        Assert.assertFalse(parser.currentState().isArrayDelimiter());
+        Assert.assertEquals(ParseState.KEY, parser.nextState());
+        Assert.assertTrue(parser.currentState().isText());
+        Assert.assertEquals("a", parser.nextKey());
+        Assert.assertEquals(ParseState.NUMBER_VALUE, parser.nextState());
+        Assert.assertFalse(parser.currentState().isText());
+        Assert.assertEquals(1, parser.nextIntValue());
+        Assert.assertEquals(ParseState.KEY, parser.nextState());
+        Assert.assertTrue(parser.currentState().isText());
+        Assert.assertEquals("b", parser.nextKey());
+        Assert.assertEquals(ParseState.STRING_VALUE, parser.nextState());
+        Assert.assertTrue(parser.currentState().isText());
+        Assert.assertEquals("2", parser.nextStringValue());
+        Assert.assertEquals(ParseState.END_OBJECT, parser.nextState());
+        Assert.assertFalse(parser.currentState().isDocumentDelimiter());
+        Assert.assertTrue(parser.currentState().isObjectDelimiter());
+        Assert.assertFalse(parser.currentState().isArrayDelimiter());
+        Assert.assertEquals(ParseState.KEY, parser.nextState());
+        Assert.assertTrue(parser.currentState().isText());
+        Assert.assertEquals("key2", parser.nextKey());
+        Assert.assertEquals(ParseState.OBJECT, parser.nextState());
+        Assert.assertFalse(parser.currentState().isDocumentDelimiter());
+        Assert.assertTrue(parser.currentState().isObjectDelimiter());
+        Assert.assertFalse(parser.currentState().isArrayDelimiter());
+        Assert.assertEquals(ParseState.KEY, parser.nextState());
+        Assert.assertTrue(parser.currentState().isText());
+        Assert.assertEquals("1", parser.nextKey());
+        Assert.assertEquals(ParseState.BOOLEAN_VALUE, parser.nextState());
+        Assert.assertFalse(parser.currentState().isText());
+        Assert.assertTrue(parser.nextBooleanValue());
+        Assert.assertEquals(ParseState.END_OBJECT, parser.nextState());
+        Assert.assertFalse(parser.currentState().isDocumentDelimiter());
+        Assert.assertTrue(parser.currentState().isObjectDelimiter());
+        Assert.assertFalse(parser.currentState().isArrayDelimiter());
+        Assert.assertEquals(ParseState.END_OBJECT, parser.nextState());
+        Assert.assertFalse(parser.currentState().isDocumentDelimiter());
+        Assert.assertTrue(parser.currentState().isObjectDelimiter());
+        Assert.assertFalse(parser.currentState().isArrayDelimiter());
+        Assert.assertEquals(ParseState.END_DOCUMENT, parser.nextState());
+        Assert.assertTrue(parser.currentState().isDocumentDelimiter());
+        Assert.assertFalse(parser.currentState().isObjectDelimiter());
+        Assert.assertFalse(parser.currentState().isArrayDelimiter());
     }
 
     @Test
