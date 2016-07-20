@@ -256,10 +256,12 @@ public final class ParserTest {
         Assert.assertEquals("key", parser.nextKey());
         Assert.assertEquals(ParseState.OBJECT, parser.nextState());
         Assert.assertEquals(ParseState.END_OBJECT, parser.skipToEndStructure());
+        Assert.assertTrue(parser.currentState().isEndStructure());
         Assert.assertEquals(ParseState.KEY, parser.nextState());
         Assert.assertEquals("key2", parser.nextKey());
         Assert.assertEquals(ParseState.OBJECT, parser.nextState());
         Assert.assertEquals(ParseState.END_OBJECT, parser.skipToEndStructure());
+        Assert.assertTrue(parser.currentState().isEndStructure());
         Assert.assertEquals(ParseState.END_OBJECT, parser.nextState());
         Assert.assertEquals(ParseState.END_DOCUMENT, parser.nextState());
     }
@@ -274,10 +276,12 @@ public final class ParserTest {
         Assert.assertEquals(ParseState.OBJECT, parser.nextState());
         Assert.assertEquals(ParseState.KEY, parser.nextState());
         Assert.assertEquals(ParseState.END_OBJECT, parser.skipToEndStructure());
+        Assert.assertTrue(parser.currentState().isEndStructure());
         Assert.assertEquals(ParseState.KEY, parser.nextState());
         Assert.assertEquals("key2", parser.nextKey());
         Assert.assertEquals(ParseState.OBJECT, parser.nextState());
         Assert.assertEquals(ParseState.END_OBJECT, parser.skipToEndStructure());
+        Assert.assertTrue(parser.currentState().isEndStructure());
         Assert.assertEquals(ParseState.END_OBJECT, parser.nextState());
         Assert.assertEquals(ParseState.END_DOCUMENT, parser.nextState());
     }
@@ -326,6 +330,7 @@ public final class ParserTest {
         Assert.assertEquals(ParseState.ARRAY, parser.nextState());
         Assert.assertEquals(ParseState.ARRAY, parser.nextState());
         Assert.assertEquals(ParseState.END_ARRAY, parser.skipToEndStructure());
+        Assert.assertTrue(parser.currentState().isEndStructure());
         Assert.assertEquals(ParseState.END_ARRAY, parser.nextState());
         Assert.assertEquals(ParseState.END_DOCUMENT, parser.nextState());
     }
@@ -336,6 +341,7 @@ public final class ParserTest {
         Assert.assertEquals(ParseState.DOCUMENT, parser.nextState());
         Assert.assertEquals(ParseState.ARRAY, parser.nextState());
         Assert.assertEquals(ParseState.END_ARRAY, parser.skipToEndStructure());
+        Assert.assertTrue(parser.currentState().isEndStructure());
         Assert.assertEquals(ParseState.END_DOCUMENT, parser.nextState());
     }
 
@@ -346,6 +352,7 @@ public final class ParserTest {
         Assert.assertEquals(ParseState.ARRAY, parser.nextState());
         Assert.assertEquals(ParseState.STRING_VALUE, parser.nextState());
         Assert.assertEquals(ParseState.END_ARRAY, parser.skipToEndStructure());
+        Assert.assertTrue(parser.currentState().isEndStructure());
         Assert.assertEquals(ParseState.END_DOCUMENT, parser.nextState());
     }
 
@@ -442,6 +449,7 @@ public final class ParserTest {
         Assert.assertEquals(ParseState.DOCUMENT, parser.nextState());
         Assert.assertEquals(ParseState.STRING_VALUE, parser.nextState());
         Assert.assertEquals(ParseState.END_DOCUMENT, parser.skipToEndStructure());
+        Assert.assertTrue(parser.currentState().isEndStructure());
     }
 
     @Test
@@ -450,6 +458,7 @@ public final class ParserTest {
 
         Assert.assertEquals(ParseState.DOCUMENT, parser.nextState());
         Assert.assertEquals(ParseState.END_DOCUMENT, parser.skipToEndStructure());
+        Assert.assertTrue(parser.currentState().isEndStructure());
     }
 
     @Test
