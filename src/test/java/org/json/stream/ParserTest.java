@@ -1004,7 +1004,7 @@ public final class ParserTest {
     public void testSimpleNumber6NumberDouble() throws Exception {
         JSONStreamReader parser = new JSONStreamReader(NUMBER_6);
         Assert.assertEquals(ParseState.DOCUMENT, parser.nextState());
-        Assert.assertEquals(ParseState.VALUE, parser.nextState());
+        Assert.assertEquals(ParseState.NUMBER_VALUE, parser.nextState());
         Assert.assertNotNull(parser.nextNumberValue());
         Assert.assertEquals(ParseState.END_DOCUMENT, parser.nextState());
     }
@@ -1013,7 +1013,7 @@ public final class ParserTest {
     public void testSimpleNumber6Skip() throws Exception {
         JSONStreamReader parser = new JSONStreamReader(NUMBER_6);
         Assert.assertEquals(ParseState.DOCUMENT, parser.nextState());
-        Assert.assertEquals(ParseState.VALUE, parser.nextState());
+        Assert.assertEquals(ParseState.NUMBER_VALUE, parser.nextState());
         Assert.assertEquals(ParseState.END_DOCUMENT, parser.skipToEndStructure());
     }
 }
