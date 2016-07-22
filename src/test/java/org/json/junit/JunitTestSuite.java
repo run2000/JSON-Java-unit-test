@@ -1,5 +1,6 @@
 package org.json.junit;
 
+import org.json.stream.*;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 @RunWith(Suite.class)
@@ -15,7 +16,10 @@ import org.junit.runners.Suite;
    JSONObjectTest.class,
    JSONArrayTest.class,
    EnumTest.class,
-   JSONPointerTest.class
+   JSONPointerTest.class,
+   AppendableTest.class,
+   BuilderTest.class,
+   ParserTest.class
 })
-public class JunitTestSuite {   
-}  
+public class JunitTestSuite {
+}
