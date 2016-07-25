@@ -775,6 +775,16 @@ public final class ParserTest {
     }
 
     @Test
+    public void testObjectTestSkip1() throws Exception {
+        JSONStreamReader parser = new JSONStreamReader(new StringReader(OBJECT_TEST_1));
+
+        Assert.assertEquals(ParseState.DOCUMENT, parser.nextState());
+        Assert.assertEquals(ParseState.OBJECT, parser.nextState());
+        Assert.assertEquals(ParseState.END_OBJECT, parser.skipToEndStructure());
+        Assert.assertEquals(ParseState.END_DOCUMENT, parser.nextState());
+    }
+
+    @Test
     public void testObjectTest2() throws Exception {
         JSONStreamReader parser = new JSONStreamReader(new StringReader(OBJECT_TEST_2));
 
@@ -843,6 +853,16 @@ public final class ParserTest {
         Assert.assertEquals("myVal", parser.nextStringValue());
         Assert.assertEquals(ParseState.END_OBJECT, parser.nextState());
         Assert.assertEquals(ParseState.END_OBJECT, parser.nextState());
+        Assert.assertEquals(ParseState.END_DOCUMENT, parser.nextState());
+    }
+
+    @Test
+    public void testObjectTestSkip2() throws Exception {
+        JSONStreamReader parser = new JSONStreamReader(new StringReader(OBJECT_TEST_2));
+
+        Assert.assertEquals(ParseState.DOCUMENT, parser.nextState());
+        Assert.assertEquals(ParseState.OBJECT, parser.nextState());
+        Assert.assertEquals(ParseState.END_OBJECT, parser.skipToEndStructure());
         Assert.assertEquals(ParseState.END_DOCUMENT, parser.nextState());
     }
 
@@ -958,6 +978,16 @@ public final class ParserTest {
         Assert.assertEquals(ParseState.STRING_VALUE, parser.nextState());
         Assert.assertEquals("-1", parser.nextStringValue());
         Assert.assertEquals(ParseState.END_ARRAY, parser.nextState());
+        Assert.assertEquals(ParseState.END_DOCUMENT, parser.nextState());
+    }
+
+    @Test
+    public void testArrayTestSkip1() throws Exception {
+        JSONStreamReader parser = new JSONStreamReader(new StringReader(ARRAY_TEST_1));
+
+        Assert.assertEquals(ParseState.DOCUMENT, parser.nextState());
+        Assert.assertEquals(ParseState.ARRAY, parser.nextState());
+        Assert.assertEquals(ParseState.END_ARRAY, parser.skipToEndStructure());
         Assert.assertEquals(ParseState.END_DOCUMENT, parser.nextState());
     }
 

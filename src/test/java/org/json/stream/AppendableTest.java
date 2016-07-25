@@ -44,6 +44,20 @@ public final class AppendableTest {
 
         Assert.assertEquals("This is a test 123.", builder.toString());
     }
+
+    @Test
+    public void testBuffer3() throws Exception {
+        StringBuffer builder = new StringBuffer();
+
+        try (BufferedAppendable test = new BufferedAppendable(16).with(builder)) {
+            test.append("This is ");
+            test.append(null);
+            test.append(" 123.");
+        }
+
+        Assert.assertEquals("This is null 123.", builder.toString());
+    }
+
     @Test
     public void testBufferSub() throws Exception {
         StringBuffer builder = new StringBuffer();
@@ -79,7 +93,20 @@ public final class AppendableTest {
     }
 
     @Test
-    public void testBuffer2Char() throws Exception {
+    public void testBuffer3Sub() throws Exception {
+        StringBuffer builder = new StringBuffer();
+
+        try (BufferedAppendable test = new BufferedAppendable(16).with(builder)) {
+            test.append("This is a test 123.", 0, 12);
+            test.append(null, 2, 4);
+            test.append("This is a test 123.", 14, 19);
+        }
+
+        Assert.assertEquals("This is a tell 123.", builder.toString());
+    }
+
+    @Test
+    public void testBufferChar() throws Exception {
         StringBuffer builder = new StringBuffer();
 
         try (BufferedAppendable test = new BufferedAppendable(16).with(builder)) {
