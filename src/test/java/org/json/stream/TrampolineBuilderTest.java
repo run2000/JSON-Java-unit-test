@@ -8,6 +8,7 @@ import org.junit.Test;
 import java.io.StringReader;
 import java.math.BigDecimal;
 import java.math.BigInteger;
+import java.util.Arrays;
 
 /**
  * Test cases for TrampolineObjectBuilder and related builder and filter
@@ -131,7 +132,7 @@ public final class TrampolineBuilderTest {
     @Test
     public void testSimpleObject() throws Exception {
         JSONStreamReader parser = new JSONStreamReader(OBJECT_1);
-        Object value = TrampolineObjectBuilder.buildJSONValue(parser);
+        Object value = JSONTrampolineBuilder.buildJSONValue(parser);
         Assert.assertTrue(value instanceof JSONObject);
 
         JSONObject jsonObject = (JSONObject) value;
@@ -141,7 +142,7 @@ public final class TrampolineBuilderTest {
     @Test
     public void testSimpleObject2() throws Exception {
         JSONStreamReader parser = new JSONStreamReader(OBJECT_1);
-        JSONObject jsonObject = TrampolineObjectBuilder.buildJSONObject(parser);
+        JSONObject jsonObject = JSONTrampolineBuilder.buildJSONObject(parser);
         Assert.assertNotNull(jsonObject);
         Assert.assertEquals(0, jsonObject.length());
     }
@@ -149,7 +150,7 @@ public final class TrampolineBuilderTest {
     @Test
     public void testObject1() throws Exception {
         JSONStreamReader parser = new JSONStreamReader(OBJECT_2);
-        Object value = TrampolineObjectBuilder.buildJSONValue(parser, filter);
+        Object value = JSONTrampolineBuilder.buildJSONValue(parser, filter);
         Assert.assertTrue(value instanceof JSONObject);
 
         JSONObject jsonObject = (JSONObject) value;
@@ -161,7 +162,7 @@ public final class TrampolineBuilderTest {
     @Test
     public void testObject1A() throws Exception {
         JSONStreamReader parser = new JSONStreamReader(OBJECT_2);
-        JSONObject jsonObject = TrampolineObjectBuilder.buildJSONObject(parser);
+        JSONObject jsonObject = JSONTrampolineBuilder.buildJSONObject(parser);
         Assert.assertNotNull(jsonObject);
         Assert.assertEquals(1, jsonObject.length());
         Assert.assertTrue(jsonObject.has("key"));
@@ -171,7 +172,7 @@ public final class TrampolineBuilderTest {
     @Test
     public void testObject2() throws Exception {
         JSONStreamReader parser = new JSONStreamReader(OBJECT_3);
-        Object value = TrampolineObjectBuilder.buildJSONValue(parser, filter);
+        Object value = JSONTrampolineBuilder.buildJSONValue(parser, filter);
         Assert.assertTrue(value instanceof JSONObject);
 
         JSONObject jsonObject = (JSONObject) value;
@@ -186,7 +187,7 @@ public final class TrampolineBuilderTest {
     @Test
     public void testObject2A() throws Exception {
         JSONStreamReader parser = new JSONStreamReader(OBJECT_3);
-        JSONObject jsonObject = TrampolineObjectBuilder.buildJSONObject(parser);
+        JSONObject jsonObject = JSONTrampolineBuilder.buildJSONObject(parser);
         Assert.assertNotNull(jsonObject);
         Assert.assertEquals(2, jsonObject.length());
 
@@ -199,7 +200,7 @@ public final class TrampolineBuilderTest {
     @Test
     public void testObject3() throws Exception {
         JSONStreamReader parser = new JSONStreamReader(OBJECT_4);
-        Object value = TrampolineObjectBuilder.buildJSONValue(parser, filter);
+        Object value = JSONTrampolineBuilder.buildJSONValue(parser, filter);
         Assert.assertTrue(value instanceof JSONObject);
 
         JSONObject jsonObject = (JSONObject) value;
@@ -221,7 +222,7 @@ public final class TrampolineBuilderTest {
     @Test
     public void testObject3A() throws Exception {
         JSONStreamReader parser = new JSONStreamReader(OBJECT_4);
-        JSONObject jsonObject = TrampolineObjectBuilder.buildJSONObject(parser);
+        JSONObject jsonObject = JSONTrampolineBuilder.buildJSONObject(parser);
         Assert.assertNotNull(jsonObject);
 
         Assert.assertEquals(2, jsonObject.length());
@@ -241,7 +242,7 @@ public final class TrampolineBuilderTest {
     @Test
     public void testObject4() throws Exception {
         JSONStreamReader parser = new JSONStreamReader(OBJECT_5);
-        JSONObject jsonObject = TrampolineObjectBuilder.buildJSONObject(parser, filter);
+        JSONObject jsonObject = JSONTrampolineBuilder.buildJSONObject(parser, filter);
         Assert.assertNotNull(jsonObject);
 
         Assert.assertEquals(2, jsonObject.length());
@@ -262,7 +263,7 @@ public final class TrampolineBuilderTest {
     @Test
     public void testSimpleArray() throws Exception {
         JSONStreamReader parser = new JSONStreamReader(ARRAY_1);
-        Object value = TrampolineObjectBuilder.buildJSONValue(parser);
+        Object value = JSONTrampolineBuilder.buildJSONValue(parser);
         Assert.assertTrue(value instanceof JSONArray);
 
         JSONArray jsonArray = (JSONArray) value;
@@ -271,7 +272,7 @@ public final class TrampolineBuilderTest {
 
     @Test
     public void testSimpleArray2() throws Exception {
-        JSONArray jsonArray = (JSONArray) TrampolineObjectBuilder.buildJSONValue(ARRAY_1);
+        JSONArray jsonArray = (JSONArray) JSONTrampolineBuilder.buildJSONValue(ARRAY_1);
         Assert.assertNotNull(jsonArray);
 
         Assert.assertEquals(0, jsonArray.length());
@@ -280,7 +281,7 @@ public final class TrampolineBuilderTest {
     @Test
     public void testArray1() throws Exception {
         JSONStreamReader parser = new JSONStreamReader(ARRAY_2);
-        Object value = TrampolineObjectBuilder.buildJSONValue(parser, filter);
+        Object value = JSONTrampolineBuilder.buildJSONValue(parser, filter);
         Assert.assertTrue(value instanceof JSONArray);
 
         JSONArray jsonArray = (JSONArray) value;
@@ -290,7 +291,7 @@ public final class TrampolineBuilderTest {
 
     @Test
     public void testArray1A() throws Exception {
-        JSONArray jsonArray = TrampolineObjectBuilder.buildJSONArray(ARRAY_2);
+        JSONArray jsonArray = JSONTrampolineBuilder.buildJSONArray(ARRAY_2);
         Assert.assertNotNull(jsonArray);
 
         Assert.assertEquals(1, jsonArray.length());
@@ -300,7 +301,7 @@ public final class TrampolineBuilderTest {
     @Test
     public void testArray2() throws Exception {
         JSONStreamReader parser = new JSONStreamReader(ARRAY_3);
-        Object value = TrampolineObjectBuilder.buildJSONValue(parser, filter);
+        Object value = JSONTrampolineBuilder.buildJSONValue(parser, filter);
         Assert.assertTrue(value instanceof JSONArray);
 
         JSONArray jsonArray = (JSONArray) value;
@@ -314,7 +315,7 @@ public final class TrampolineBuilderTest {
     @Test
     public void testArray2A() throws Exception {
         JSONStreamReader parser = new JSONStreamReader(ARRAY_3);
-        JSONArray jsonArray = TrampolineObjectBuilder.buildJSONArray(parser);
+        JSONArray jsonArray = JSONTrampolineBuilder.buildJSONArray(parser);
         Assert.assertNotNull(jsonArray);
 
         Assert.assertEquals(4, jsonArray.length());
@@ -327,7 +328,7 @@ public final class TrampolineBuilderTest {
     @Test
     public void testArray3() throws Exception {
         JSONStreamReader parser = new JSONStreamReader(ARRAY_4);
-        Object value = TrampolineObjectBuilder.buildJSONValue(parser, filter);
+        Object value = JSONTrampolineBuilder.buildJSONValue(parser, filter);
         Assert.assertTrue(value instanceof JSONArray);
 
         JSONArray jsonArray = (JSONArray) value;
@@ -350,7 +351,7 @@ public final class TrampolineBuilderTest {
     @Test
     public void testArray3A() throws Exception {
         JSONStreamReader parser = new JSONStreamReader(ARRAY_4);
-        JSONArray jsonArray = TrampolineObjectBuilder.buildJSONArray(parser);
+        JSONArray jsonArray = JSONTrampolineBuilder.buildJSONArray(parser);
         Assert.assertNotNull(jsonArray);
 
         Assert.assertEquals(1, jsonArray.length());
@@ -372,7 +373,7 @@ public final class TrampolineBuilderTest {
     @Test
     public void testSimpleString() throws Exception {
         JSONStreamReader parser = new JSONStreamReader(STRING_1);
-        Object value = TrampolineObjectBuilder.buildJSONValue(parser);
+        Object value = JSONTrampolineBuilder.buildJSONValue(parser);
 
         Assert.assertNotNull(value);
         Assert.assertTrue(value instanceof String);
@@ -383,7 +384,7 @@ public final class TrampolineBuilderTest {
 
     @Test
     public void testSimpleString2() throws Exception {
-        Object value = TrampolineObjectBuilder.buildJSONValue(STRING_2);
+        Object value = JSONTrampolineBuilder.buildJSONValue(STRING_2);
 
         Assert.assertNotNull(value);
         Assert.assertTrue(value instanceof String);
@@ -395,7 +396,7 @@ public final class TrampolineBuilderTest {
     @Test
     public void testSimpleString3() throws Exception {
         JSONStreamReader parser = new JSONStreamReader(STRING_3);
-        Object value = TrampolineObjectBuilder.buildJSONValue(parser);
+        Object value = JSONTrampolineBuilder.buildJSONValue(parser);
 
         Assert.assertNotNull(value);
         Assert.assertTrue(value instanceof String);
@@ -407,7 +408,7 @@ public final class TrampolineBuilderTest {
     @Test
     public void testSimpleString4() throws Exception {
         JSONStreamReader parser = new JSONStreamReader(STRING_4);
-        Object value = TrampolineObjectBuilder.buildJSONValue(parser);
+        Object value = JSONTrampolineBuilder.buildJSONValue(parser);
 
         Assert.assertNotNull(value);
         Assert.assertTrue(value instanceof String);
@@ -419,7 +420,7 @@ public final class TrampolineBuilderTest {
     @Test
     public void testSimpleString5() throws Exception {
         JSONStreamReader parser = new JSONStreamReader(STRING_5);
-        Object value = TrampolineObjectBuilder.buildJSONValue(parser);
+        Object value = JSONTrampolineBuilder.buildJSONValue(parser);
 
         Assert.assertNotNull(value);
         Assert.assertTrue(value instanceof String);
@@ -431,7 +432,7 @@ public final class TrampolineBuilderTest {
     @Test
     public void testSimpleFalse() throws Exception {
         JSONStreamReader parser = new JSONStreamReader(FALSE_1);
-        Object value = TrampolineObjectBuilder.buildJSONValue(parser);
+        Object value = JSONTrampolineBuilder.buildJSONValue(parser);
 
         Assert.assertNotNull(value);
         Assert.assertTrue(value instanceof Boolean);
@@ -443,7 +444,7 @@ public final class TrampolineBuilderTest {
     @Test
     public void testSimpleTrue() throws Exception {
         JSONStreamReader parser = new JSONStreamReader(TRUE_1);
-        Object value = TrampolineObjectBuilder.buildJSONValue(parser);
+        Object value = JSONTrampolineBuilder.buildJSONValue(parser);
 
         Assert.assertNotNull(value);
         Assert.assertTrue(value instanceof Boolean);
@@ -455,7 +456,7 @@ public final class TrampolineBuilderTest {
     @Test
     public void testSimpleNull() throws Exception {
         JSONStreamReader parser = new JSONStreamReader(NULL_1);
-        Object value = TrampolineObjectBuilder.buildJSONValue(parser);
+        Object value = JSONTrampolineBuilder.buildJSONValue(parser);
 
         Assert.assertNotNull(value);
         Assert.assertSame(JSONObject.NULL, value);
@@ -464,7 +465,7 @@ public final class TrampolineBuilderTest {
     @Test
     public void testSimpleNumber() throws Exception {
         JSONStreamReader parser = new JSONStreamReader(NUMBER_1);
-        Object value = TrampolineObjectBuilder.buildJSONValue(parser);
+        Object value = JSONTrampolineBuilder.buildJSONValue(parser);
 
         Assert.assertNotNull(value);
         Assert.assertTrue(value instanceof Double);
@@ -476,7 +477,7 @@ public final class TrampolineBuilderTest {
     @Test
     public void testSimpleNumber2() throws Exception {
         JSONStreamReader parser = new JSONStreamReader(NUMBER_2);
-        Object value = TrampolineObjectBuilder.buildJSONValue(parser);
+        Object value = JSONTrampolineBuilder.buildJSONValue(parser);
 
         Assert.assertNotNull(value);
         Assert.assertTrue(value instanceof Integer);
@@ -488,7 +489,7 @@ public final class TrampolineBuilderTest {
     @Test
     public void testSimpleNumber3() throws Exception {
         JSONStreamReader parser = new JSONStreamReader(NUMBER_3);
-        Object value = TrampolineObjectBuilder.buildJSONValue(parser);
+        Object value = JSONTrampolineBuilder.buildJSONValue(parser);
 
         Assert.assertNotNull(value);
         Assert.assertTrue(value instanceof Integer);
@@ -500,7 +501,7 @@ public final class TrampolineBuilderTest {
     @Test
     public void testSimpleNumber4() throws Exception {
         JSONStreamReader parser = new JSONStreamReader(NUMBER_4);
-        Object value = TrampolineObjectBuilder.buildJSONValue(parser);
+        Object value = JSONTrampolineBuilder.buildJSONValue(parser);
 
         Assert.assertNotNull(value);
         Assert.assertTrue(value instanceof Double);
@@ -512,7 +513,7 @@ public final class TrampolineBuilderTest {
     @Test
     public void testSimpleNumber5() throws Exception {
         JSONStreamReader parser = new JSONStreamReader(NUMBER_5);
-        Object value = TrampolineObjectBuilder.buildJSONValue(parser);
+        Object value = JSONTrampolineBuilder.buildJSONValue(parser);
 
         Assert.assertNotNull(value);
         Assert.assertTrue(value instanceof Double);
@@ -524,7 +525,7 @@ public final class TrampolineBuilderTest {
     @Test
     public void testSimpleNumber6() throws Exception {
         JSONStreamReader parser = new JSONStreamReader(NUMBER_6);
-        Object value = TrampolineObjectBuilder.buildJSONValue(parser);
+        Object value = JSONTrampolineBuilder.buildJSONValue(parser);
 
         Assert.assertNotNull(value);
         Assert.assertTrue(value instanceof Double);
@@ -540,7 +541,7 @@ public final class TrampolineBuilderTest {
      */
     @Test
     public void testGetArrayValues() {
-        JSONArray jsonArray = TrampolineObjectBuilder.buildJSONArray(
+        JSONArray jsonArray = JSONTrampolineBuilder.buildJSONArray(
                 new StringReader(ARRAY_TEST_1));
 
         // booleans
@@ -586,7 +587,7 @@ public final class TrampolineBuilderTest {
     @Test
     public void testJsonObjectValues() {
         JSONStreamReader parser = new JSONStreamReader(OBJECT_TEST_2);
-        JSONObject jsonObject = TrampolineObjectBuilder.buildJSONObject(
+        JSONObject jsonObject = JSONTrampolineBuilder.buildJSONObject(
                 parser, filter);
 
         Assert.assertTrue(jsonObject.has("trueKey"));
@@ -649,7 +650,7 @@ public final class TrampolineBuilderTest {
     @Test
     public void testJsonPointerFilter() {
         JSONStreamReader parser = new JSONStreamReader(new StringReader(TEST_6901));
-        JSONObject jsonObject = TrampolineObjectBuilder.buildJSONObject(
+        JSONObject jsonObject = JSONTrampolineBuilder.buildJSONObject(
                 parser, filter);
 
     }
@@ -664,7 +665,7 @@ public final class TrampolineBuilderTest {
     public void testJsonValidNumberValuesNeitherLongNorIEEE754Compatible() {
         // Valid JSON Numbers, probably should return BigDecimal or BigInteger objects
         JSONStreamReader parser = new JSONStreamReader(OBJECT_TEST_3);
-        JSONObject jsonObject = TrampolineObjectBuilder.buildJSONObject(parser, filter);
+        JSONObject jsonObject = JSONTrampolineBuilder.buildJSONObject(parser, filter);
 
         Assert.assertTrue(jsonObject.has("numberWithDecimals"));
 
@@ -682,20 +683,89 @@ public final class TrampolineBuilderTest {
                 new BigDecimal("-23.45e2327").equals(obj));
     }
 
+    @Test
+    public void testLargeArrays() throws Exception {
+        char[] buff = new char[1000];
+        char[] buff2 = new char[1000];
+        Arrays.fill(buff, '[');
+        Arrays.fill(buff2, ']');
+        String result = new StringBuilder()
+                .append(buff)
+/*
+                .append(buff)
+                .append(buff)
+                .append(buff)
+                .append(buff)
+                .append(buff)
+                .append(buff)
+                .append(buff)
+                .append(buff)
+                .append(buff)
+                .append(buff2)
+                .append(buff2)
+                .append(buff2)
+                .append(buff2)
+                .append(buff2)
+                .append(buff2)
+                .append(buff2)
+                .append(buff2)
+                .append(buff2)
+*/
+                .append(buff2)
+                .toString();
+
+        // Unlikely to exhaust memory
+        JSONArray jsonArray = JSONTrampolineBuilder.buildJSONArray(result);
+
+        Assert.assertEquals(1, jsonArray.length());
+    }
+
+    @Test
+    public void testLargeArrays2() throws Exception {
+        char[] buff = new char[1000];
+        char[] buff2 = new char[1000];
+        Arrays.fill(buff, '[');
+        Arrays.fill(buff2, ']');
+        String result = new StringBuilder()
+                .append(buff)
+                .append(buff2)
+                .toString();
+
+        // This runs out of stack eventually
+        JSONArray jsonArray2 = JSONObjectBuilder.buildJSONArray(result);
+        Assert.assertEquals(1, jsonArray2.length());
+    }
+
+    @Test
+    public void testLargeArrays3() throws Exception {
+        char[] buff = new char[1000];
+        char[] buff2 = new char[1000];
+        Arrays.fill(buff, '[');
+        Arrays.fill(buff2, ']');
+        String result = new StringBuilder()
+                .append(buff)
+                .append(buff2)
+                .toString();
+
+        // This runs out of stack quickly!
+        JSONArray jsonArray2 = new JSONArray(result);
+        Assert.assertEquals(1, jsonArray2.length());
+    }
+
     /**
-     * Created by run2000 on 8/1/2016.
+     * Created by run2000 on 2016-08-01.
      */
     private static class DummyFilter implements TrampolineFilter {
 
         @Override
         public boolean acceptIndex(int index, JSONStreamReader.ParseState state, int stackDepth, Iterable<StructureBuilder> stack) {
-            System.out.println(stackDepth + ": " + TrampolineObjectBuilder.toJSONPointer(stack));
+            System.out.println(stackDepth + ": " + JSONPointerUtils.toJSONPointer(stack));
             return true;
         }
 
         @Override
         public boolean acceptField(String fieldName, JSONStreamReader.ParseState state, int stackDepth, Iterable<StructureBuilder> stack) {
-            System.out.println(stackDepth + ": " + TrampolineObjectBuilder.toJSONPointer(stack));
+            System.out.println(stackDepth + ": " + JSONPointerUtils.toJSONPointer(stack));
             return true;//"key2".equals(fieldName);
         }
     }

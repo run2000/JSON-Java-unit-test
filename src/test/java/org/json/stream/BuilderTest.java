@@ -8,6 +8,7 @@ import org.junit.Test;
 import java.io.StringReader;
 import java.math.BigDecimal;
 import java.math.BigInteger;
+import java.util.Arrays;
 
 /**
  * Test cases for JSONObjectBuilder.
@@ -414,6 +415,16 @@ public final class BuilderTest {
     }
 
     @Test
+    public void testSimpleString5A() throws Exception {
+        JSONArray value = new JSONArray('[' + STRING_5 + ']');
+
+        Assert.assertNotNull(value);
+
+        String str = value.getString(0);
+        Assert.assertEquals(3300, str.length());
+    }
+
+    @Test
     public void testSimpleFalse() throws Exception {
         JSONStreamReader parser = new JSONStreamReader(FALSE_1);
         Object value = JSONObjectBuilder.buildJSONValue(parser);
@@ -650,5 +661,74 @@ public final class BuilderTest {
         obj = jsonObject.get( "largeExponent" );
         Assert.assertTrue("largeExponent should currently evaluates as a string",
                 new BigDecimal("-23.45e2327").equals(obj));
+    }
+
+    @Test
+    public void testLargeArrays() throws Exception {
+        char[] buff = new char[1000];
+        char[] buff2 = new char[1000];
+        Arrays.fill(buff, '[');
+        Arrays.fill(buff2, ']');
+        String result = new StringBuilder()
+                .append(buff)
+/*
+                .append(buff)
+                .append(buff)
+                .append(buff)
+                .append(buff)
+                .append(buff)
+                .append(buff)
+                .append(buff)
+                .append(buff)
+                .append(buff)
+                .append(buff2)
+                .append(buff2)
+                .append(buff2)
+                .append(buff2)
+                .append(buff2)
+                .append(buff2)
+                .append(buff2)
+                .append(buff2)
+                .append(buff2)
+*/
+                .append(buff2)
+                .toString();
+
+        // Unlikely to exhaust memory
+        JSONArray jsonArray = JSONTrampolineBuilder.buildJSONArray(result);
+
+        Assert.assertEquals(1, jsonArray.length());
+    }
+
+    @Test
+    public void testLargeArrays2() throws Exception {
+        char[] buff = new char[1000];
+        char[] buff2 = new char[1000];
+        Arrays.fill(buff, '[');
+        Arrays.fill(buff2, ']');
+        String result = new StringBuilder()
+                .append(buff)
+                .append(buff2)
+                .toString();
+
+        // This runs out of stack eventually
+        JSONArray jsonArray2 = JSONObjectBuilder.buildJSONArray(result);
+        Assert.assertEquals(1, jsonArray2.length());
+    }
+
+    @Test
+    public void testLargeArrays3() throws Exception {
+        char[] buff = new char[1000];
+        char[] buff2 = new char[1000];
+        Arrays.fill(buff, '[');
+        Arrays.fill(buff2, ']');
+        String result = new StringBuilder()
+                .append(buff)
+                .append(buff2)
+                .toString();
+
+        // This runs out of stack quickly!
+        JSONArray jsonArray2 = new JSONArray(result);
+        Assert.assertEquals(1, jsonArray2.length());
     }
 }
