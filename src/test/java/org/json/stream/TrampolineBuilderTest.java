@@ -8,7 +8,9 @@ import org.junit.Test;
 import java.io.StringReader;
 import java.math.BigDecimal;
 import java.math.BigInteger;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Iterator;
 
 /**
  * Test cases for TrampolineObjectBuilder and related builder and filter
@@ -127,8 +129,6 @@ public final class TrampolineBuilderTest {
             "  \"m~n\": 8\n" +
             "}";
 
-    private final DummyFilter filter = new DummyFilter();
-
     @Test
     public void testSimpleObject() throws Exception {
         JSONStreamReader parser = new JSONStreamReader(OBJECT_1);
@@ -150,6 +150,7 @@ public final class TrampolineBuilderTest {
     @Test
     public void testObject1() throws Exception {
         JSONStreamReader parser = new JSONStreamReader(OBJECT_2);
+        DummyFilter filter = new DummyFilter();
         Object value = JSONTrampolineBuilder.buildJSONValue(parser, filter);
         Assert.assertTrue(value instanceof JSONObject);
 
@@ -157,6 +158,9 @@ public final class TrampolineBuilderTest {
         Assert.assertEquals(1, jsonObject.length());
         Assert.assertTrue(jsonObject.has("key"));
         Assert.assertEquals(Double.valueOf(1.0d), jsonObject.get("key"));
+
+        Iterator<String> pointers = filter.getPointerList().iterator();
+        Assert.assertEquals("/key", pointers.next());
     }
 
     @Test
@@ -172,6 +176,7 @@ public final class TrampolineBuilderTest {
     @Test
     public void testObject2() throws Exception {
         JSONStreamReader parser = new JSONStreamReader(OBJECT_3);
+        DummyFilter filter = new DummyFilter();
         Object value = JSONTrampolineBuilder.buildJSONValue(parser, filter);
         Assert.assertTrue(value instanceof JSONObject);
 
@@ -182,6 +187,10 @@ public final class TrampolineBuilderTest {
         Assert.assertEquals(Double.valueOf(1.0d), jsonObject.get("key"));
         Assert.assertTrue(jsonObject.has("key2"));
         Assert.assertEquals(Boolean.TRUE, jsonObject.get("key2"));
+
+        Iterator<String> pointers = filter.getPointerList().iterator();
+        Assert.assertEquals("/key", pointers.next());
+        Assert.assertEquals("/key2", pointers.next());
     }
 
     @Test
@@ -200,6 +209,7 @@ public final class TrampolineBuilderTest {
     @Test
     public void testObject3() throws Exception {
         JSONStreamReader parser = new JSONStreamReader(OBJECT_4);
+        DummyFilter filter = new DummyFilter();
         Object value = JSONTrampolineBuilder.buildJSONValue(parser, filter);
         Assert.assertTrue(value instanceof JSONObject);
 
@@ -217,6 +227,11 @@ public final class TrampolineBuilderTest {
         Assert.assertEquals(Integer.valueOf(1), jsonObject.getJSONArray("key2").get(0));
         Assert.assertEquals(Boolean.TRUE, jsonObject.getJSONArray("key2").get(1));
 
+        Iterator<String> pointers = filter.getPointerList().iterator();
+        Assert.assertEquals("/key", pointers.next());
+        Assert.assertEquals("/key2", pointers.next());
+        Assert.assertEquals("/key2/0", pointers.next());
+        Assert.assertEquals("/key2/1", pointers.next());
     }
 
     @Test
@@ -242,6 +257,7 @@ public final class TrampolineBuilderTest {
     @Test
     public void testObject4() throws Exception {
         JSONStreamReader parser = new JSONStreamReader(OBJECT_5);
+        DummyFilter filter = new DummyFilter();
         JSONObject jsonObject = JSONTrampolineBuilder.buildJSONObject(parser, filter);
         Assert.assertNotNull(jsonObject);
 
@@ -258,6 +274,14 @@ public final class TrampolineBuilderTest {
 
         Assert.assertNotNull(obj2);
         Assert.assertEquals(1, obj2.length());
+
+        Iterator<String> pointers = filter.getPointerList().iterator();
+        Assert.assertEquals("/key", pointers.next());
+        Assert.assertEquals("/key/a", pointers.next());
+        Assert.assertEquals("/key/b", pointers.next());
+        Assert.assertEquals("/key2", pointers.next());
+        Assert.assertEquals("/key2/1", pointers.next());
+
     }
 
     @Test
@@ -281,12 +305,16 @@ public final class TrampolineBuilderTest {
     @Test
     public void testArray1() throws Exception {
         JSONStreamReader parser = new JSONStreamReader(ARRAY_2);
+        DummyFilter filter = new DummyFilter();
         Object value = JSONTrampolineBuilder.buildJSONValue(parser, filter);
         Assert.assertTrue(value instanceof JSONArray);
 
         JSONArray jsonArray = (JSONArray) value;
         Assert.assertEquals(1, jsonArray.length());
         Assert.assertEquals("test", jsonArray.get(0));
+
+        Iterator<String> pointers = filter.getPointerList().iterator();
+        Assert.assertEquals("/0", pointers.next());
     }
 
     @Test
@@ -301,6 +329,7 @@ public final class TrampolineBuilderTest {
     @Test
     public void testArray2() throws Exception {
         JSONStreamReader parser = new JSONStreamReader(ARRAY_3);
+        DummyFilter filter = new DummyFilter();
         Object value = JSONTrampolineBuilder.buildJSONValue(parser, filter);
         Assert.assertTrue(value instanceof JSONArray);
 
@@ -310,6 +339,12 @@ public final class TrampolineBuilderTest {
         Assert.assertEquals(Integer.valueOf(4), jsonArray.get(1));
         Assert.assertEquals(JSONObject.NULL, jsonArray.get(2));
         Assert.assertEquals(Boolean.FALSE, jsonArray.get(3));
+
+        Iterator<String> pointers = filter.getPointerList().iterator();
+        Assert.assertEquals("/0", pointers.next());
+        Assert.assertEquals("/1", pointers.next());
+        Assert.assertEquals("/2", pointers.next());
+        Assert.assertEquals("/3", pointers.next());
     }
 
     @Test
@@ -328,6 +363,7 @@ public final class TrampolineBuilderTest {
     @Test
     public void testArray3() throws Exception {
         JSONStreamReader parser = new JSONStreamReader(ARRAY_4);
+        DummyFilter filter = new DummyFilter();
         Object value = JSONTrampolineBuilder.buildJSONValue(parser, filter);
         Assert.assertTrue(value instanceof JSONArray);
 
@@ -346,6 +382,12 @@ public final class TrampolineBuilderTest {
         Assert.assertEquals(4, object1.getInt("key"));
 
         Assert.assertFalse(array1.getBoolean(1));
+
+        Iterator<String> pointers = filter.getPointerList().iterator();
+        Assert.assertEquals("/0", pointers.next());
+        Assert.assertEquals("/0/0", pointers.next());
+        Assert.assertEquals("/0/0/key", pointers.next());
+        Assert.assertEquals("/0/1", pointers.next());
     }
 
     @Test
@@ -587,6 +629,7 @@ public final class TrampolineBuilderTest {
     @Test
     public void testJsonObjectValues() {
         JSONStreamReader parser = new JSONStreamReader(OBJECT_TEST_2);
+        DummyFilter filter = new DummyFilter();
         JSONObject jsonObject = JSONTrampolineBuilder.buildJSONObject(
                 parser, filter);
 
@@ -645,14 +688,48 @@ public final class TrampolineBuilderTest {
         JSONObject jsonObjectInner = jsonObject.getJSONObject("objectKey");
         Assert.assertTrue("objectKey should be JSONObject",
                 jsonObjectInner.get("myKey").equals("myVal"));
+
+        Iterator<String> pointers = filter.getPointerList().iterator();
+        Assert.assertEquals("/trueKey", pointers.next());
+        Assert.assertEquals("/falseKey", pointers.next());
+        Assert.assertEquals("/trueStrKey", pointers.next());
+        Assert.assertEquals("/falseStrKey", pointers.next());
+        Assert.assertEquals("/stringKey", pointers.next());
+        Assert.assertEquals("/intKey", pointers.next());
+        Assert.assertEquals("/intStrKey", pointers.next());
+        Assert.assertEquals("/longKey", pointers.next());
+        Assert.assertEquals("/longStrKey", pointers.next());
+        Assert.assertEquals("/doubleKey", pointers.next());
+        Assert.assertEquals("/doubleStrKey", pointers.next());
+        Assert.assertEquals("/arrayKey", pointers.next());
+        Assert.assertEquals("/arrayKey/0", pointers.next());
+        Assert.assertEquals("/arrayKey/1", pointers.next());
+        Assert.assertEquals("/arrayKey/2", pointers.next());
+        Assert.assertEquals("/objectKey", pointers.next());
+        Assert.assertEquals("/objectKey/myKey", pointers.next());
+
     }
 
     @Test
     public void testJsonPointerFilter() {
         JSONStreamReader parser = new JSONStreamReader(new StringReader(TEST_6901));
+        DummyFilter filter = new DummyFilter();
         JSONObject jsonObject = JSONTrampolineBuilder.buildJSONObject(
                 parser, filter);
 
+        Iterator<String> pointers = filter.getPointerList().iterator();
+        Assert.assertEquals("/foo", pointers.next());
+        Assert.assertEquals("/foo/0", pointers.next());
+        Assert.assertEquals("/foo/1", pointers.next());
+        Assert.assertEquals("/", pointers.next());
+        Assert.assertEquals("/a~1b", pointers.next());
+        Assert.assertEquals("/c%d", pointers.next());
+        Assert.assertEquals("/e^f", pointers.next());
+        Assert.assertEquals("/g|h", pointers.next());
+        Assert.assertEquals("/i\\j", pointers.next());
+        Assert.assertEquals("/k\"l", pointers.next());
+        Assert.assertEquals("/ ", pointers.next());
+        Assert.assertEquals("/m~0n", pointers.next());
     }
 
     /**
@@ -665,6 +742,7 @@ public final class TrampolineBuilderTest {
     public void testJsonValidNumberValuesNeitherLongNorIEEE754Compatible() {
         // Valid JSON Numbers, probably should return BigDecimal or BigInteger objects
         JSONStreamReader parser = new JSONStreamReader(OBJECT_TEST_3);
+        DummyFilter filter = new DummyFilter();
         JSONObject jsonObject = JSONTrampolineBuilder.buildJSONObject(parser, filter);
 
         Assert.assertTrue(jsonObject.has("numberWithDecimals"));
@@ -681,6 +759,12 @@ public final class TrampolineBuilderTest {
         obj = jsonObject.get( "largeExponent" );
         Assert.assertTrue("largeExponent should currently evaluates as a string",
                 new BigDecimal("-23.45e2327").equals(obj));
+
+        Iterator<String> pointers = filter.getPointerList().iterator();
+        Assert.assertEquals("/numberWithDecimals", pointers.next());
+        Assert.assertEquals("/largeNumber", pointers.next());
+        Assert.assertEquals("/preciseNumber", pointers.next());
+        Assert.assertEquals("/largeExponent", pointers.next());
     }
 
     @Test
@@ -795,17 +879,26 @@ public final class TrampolineBuilderTest {
      * Created by run2000 on 2016-08-01.
      */
     private static class DummyFilter implements TrampolineFilter {
+        private final ArrayList<String> pointerList;
+
+        public DummyFilter() {
+            pointerList = new ArrayList<String>();
+        }
 
         @Override
         public boolean acceptIndex(int index, JSONStreamReader.ParseState state, int stackDepth, Iterable<StructureBuilder> stack) {
-            System.out.println(stackDepth + ": " + JSONPointerUtils.toJSONPointer(stack));
+            pointerList.add(JSONPointerUtils.toJSONPointer(stack));
             return true;
         }
 
         @Override
         public boolean acceptField(String fieldName, JSONStreamReader.ParseState state, int stackDepth, Iterable<StructureBuilder> stack) {
-            System.out.println(stackDepth + ": " + JSONPointerUtils.toJSONPointer(stack));
+            pointerList.add(JSONPointerUtils.toJSONPointer(stack));
             return true;//"key2".equals(fieldName);
+        }
+
+        public ArrayList<String> getPointerList() {
+            return pointerList;
         }
     }
 }
