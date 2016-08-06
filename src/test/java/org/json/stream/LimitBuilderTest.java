@@ -14,12 +14,12 @@ import java.util.Arrays;
 import java.util.Iterator;
 
 /**
- * Test cases for TrampolineObjectBuilder and related builder and filter
+ * Test cases for {@link JSONLimitBuilder} and related builder and filter
  * classes.
  *
  * @version 2016-08-01
  */
-public final class TrampolineBuilderTest {
+public final class LimitBuilderTest {
 
     private static final String OBJECT_1 = "{}";
     private static final String OBJECT_2 = "{ \"key\": 1.0 }";
