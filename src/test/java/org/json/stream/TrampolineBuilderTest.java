@@ -2,6 +2,7 @@ package org.json.stream;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
+import org.json.util.JSONPointerUtils;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -868,9 +869,9 @@ public final class TrampolineBuilderTest {
                 .toString();
 
         // Unlikely to exhaust memory
-        LimitParameters params = LimitParameters.secureDefaults();
+        BuilderLimits params = BuilderLimits.secureDefaults();
         params.setNestingDepth(1000);
-        JSONArray jsonArray = JSONLimitTrampolineBuilder.buildJSONArray(result, params);
+        JSONArray jsonArray = JSONLimitBuilder.buildJSONArray(result, params);
 
         Assert.assertEquals(1, jsonArray.length());
     }

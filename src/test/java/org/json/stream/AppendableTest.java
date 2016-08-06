@@ -1,5 +1,6 @@
 package org.json.stream;
 
+import org.json.util.BufferedAppendable;
 import org.junit.Assert;
 import org.junit.Test;
 
