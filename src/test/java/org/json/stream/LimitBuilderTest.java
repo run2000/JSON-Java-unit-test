@@ -907,13 +907,13 @@ public final class LimitBuilderTest {
         }
 
         @Override
-        public boolean acceptIndex(int index, JSONStreamReader.ParseState state, int stackDepth, Iterable<StructureBuilder> stack) {
+        public boolean acceptIndex(int index, JSONStreamReader.ParseState state, Iterable<StructureBuilder> stack) {
             pointerList.add(JSONPointerUtils.toJSONPointer(stack));
             return true;
         }
 
         @Override
-        public boolean acceptField(String fieldName, JSONStreamReader.ParseState state, int stackDepth, Iterable<StructureBuilder> stack) {
+        public boolean acceptField(String fieldName, JSONStreamReader.ParseState state, Iterable<StructureBuilder> stack) {
             pointerList.add(JSONPointerUtils.toJSONPointer(stack));
             return true;//"key2".equals(fieldName);
         }
