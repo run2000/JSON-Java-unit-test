@@ -132,8 +132,8 @@ public final class LimitBuilderTest {
 
     @Test
     public void testSimpleObject() throws Exception {
-        JSONStreamReader parser = new JSONStreamReader(OBJECT_1);
-        Object value = JSONTrampolineBuilder.buildJSONValue(parser);
+        JSONLimitStreamReader parser = new JSONLimitStreamReader(OBJECT_1);
+        Object value = JSONLimitBuilder.buildJSONValue(parser);
         Assert.assertTrue(value instanceof JSONObject);
 
         JSONObject jsonObject = (JSONObject) value;
@@ -142,17 +142,19 @@ public final class LimitBuilderTest {
 
     @Test
     public void testSimpleObject2() throws Exception {
-        JSONStreamReader parser = new JSONStreamReader(OBJECT_1);
-        JSONObject jsonObject = JSONTrampolineBuilder.buildJSONObject(parser);
+        JSONLimitStreamReader parser = new JSONLimitStreamReader(OBJECT_1);
+        JSONObject jsonObject = JSONLimitBuilder.buildJSONObject(parser);
         Assert.assertNotNull(jsonObject);
         Assert.assertEquals(0, jsonObject.length());
     }
 
     @Test
     public void testObject1() throws Exception {
-        JSONStreamReader parser = new JSONStreamReader(OBJECT_2);
+        JSONLimitStreamReader parser = new JSONLimitStreamReader(OBJECT_2);
         DummyFilter filter = new DummyFilter();
-        Object value = JSONTrampolineBuilder.buildJSONValue(parser, filter);
+        BuilderLimits limits = new BuilderLimits();
+        limits.setFilter(filter);
+        Object value = JSONLimitBuilder.buildJSONValue(parser, limits);
         Assert.assertTrue(value instanceof JSONObject);
 
         JSONObject jsonObject = (JSONObject) value;
@@ -166,8 +168,8 @@ public final class LimitBuilderTest {
 
     @Test
     public void testObject1A() throws Exception {
-        JSONStreamReader parser = new JSONStreamReader(OBJECT_2);
-        JSONObject jsonObject = JSONTrampolineBuilder.buildJSONObject(parser);
+        JSONLimitStreamReader parser = new JSONLimitStreamReader(OBJECT_2);
+        JSONObject jsonObject = JSONLimitBuilder.buildJSONObject(parser);
         Assert.assertNotNull(jsonObject);
         Assert.assertEquals(1, jsonObject.length());
         Assert.assertTrue(jsonObject.has("key"));
@@ -176,9 +178,11 @@ public final class LimitBuilderTest {
 
     @Test
     public void testObject2() throws Exception {
-        JSONStreamReader parser = new JSONStreamReader(OBJECT_3);
+        JSONLimitStreamReader parser = new JSONLimitStreamReader(OBJECT_3);
         DummyFilter filter = new DummyFilter();
-        Object value = JSONTrampolineBuilder.buildJSONValue(parser, filter);
+        BuilderLimits limits = new BuilderLimits();
+        limits.setFilter(filter);
+        Object value = JSONLimitBuilder.buildJSONValue(parser, limits);
         Assert.assertTrue(value instanceof JSONObject);
 
         JSONObject jsonObject = (JSONObject) value;
@@ -196,8 +200,8 @@ public final class LimitBuilderTest {
 
     @Test
     public void testObject2A() throws Exception {
-        JSONStreamReader parser = new JSONStreamReader(OBJECT_3);
-        JSONObject jsonObject = JSONTrampolineBuilder.buildJSONObject(parser);
+        JSONLimitStreamReader parser = new JSONLimitStreamReader(OBJECT_3);
+        JSONObject jsonObject = JSONLimitBuilder.buildJSONObject(parser);
         Assert.assertNotNull(jsonObject);
         Assert.assertEquals(2, jsonObject.length());
 
@@ -209,9 +213,11 @@ public final class LimitBuilderTest {
 
     @Test
     public void testObject3() throws Exception {
-        JSONStreamReader parser = new JSONStreamReader(OBJECT_4);
+        JSONLimitStreamReader parser = new JSONLimitStreamReader(OBJECT_4);
         DummyFilter filter = new DummyFilter();
-        Object value = JSONTrampolineBuilder.buildJSONValue(parser, filter);
+        BuilderLimits limits = new BuilderLimits();
+        limits.setFilter(filter);
+        Object value = JSONLimitBuilder.buildJSONValue(parser, limits);
         Assert.assertTrue(value instanceof JSONObject);
 
         JSONObject jsonObject = (JSONObject) value;
@@ -237,8 +243,8 @@ public final class LimitBuilderTest {
 
     @Test
     public void testObject3A() throws Exception {
-        JSONStreamReader parser = new JSONStreamReader(OBJECT_4);
-        JSONObject jsonObject = JSONTrampolineBuilder.buildJSONObject(parser);
+        JSONLimitStreamReader parser = new JSONLimitStreamReader(OBJECT_4);
+        JSONObject jsonObject = JSONLimitBuilder.buildJSONObject(parser);
         Assert.assertNotNull(jsonObject);
 
         Assert.assertEquals(2, jsonObject.length());
@@ -257,9 +263,11 @@ public final class LimitBuilderTest {
 
     @Test
     public void testObject4() throws Exception {
-        JSONStreamReader parser = new JSONStreamReader(OBJECT_5);
+        JSONLimitStreamReader parser = new JSONLimitStreamReader(OBJECT_5);
         DummyFilter filter = new DummyFilter();
-        JSONObject jsonObject = JSONTrampolineBuilder.buildJSONObject(parser, filter);
+        BuilderLimits limits = new BuilderLimits();
+        limits.setFilter(filter);
+        JSONObject jsonObject = JSONLimitBuilder.buildJSONObject(parser, limits);
         Assert.assertNotNull(jsonObject);
 
         Assert.assertEquals(2, jsonObject.length());
@@ -287,8 +295,8 @@ public final class LimitBuilderTest {
 
     @Test
     public void testSimpleArray() throws Exception {
-        JSONStreamReader parser = new JSONStreamReader(ARRAY_1);
-        Object value = JSONTrampolineBuilder.buildJSONValue(parser);
+        JSONLimitStreamReader parser = new JSONLimitStreamReader(ARRAY_1);
+        Object value = JSONLimitBuilder.buildJSONValue(parser);
         Assert.assertTrue(value instanceof JSONArray);
 
         JSONArray jsonArray = (JSONArray) value;
@@ -297,7 +305,7 @@ public final class LimitBuilderTest {
 
     @Test
     public void testSimpleArray2() throws Exception {
-        JSONArray jsonArray = (JSONArray) JSONTrampolineBuilder.buildJSONValue(ARRAY_1);
+        JSONArray jsonArray = (JSONArray) JSONLimitBuilder.buildJSONValue(ARRAY_1);
         Assert.assertNotNull(jsonArray);
 
         Assert.assertEquals(0, jsonArray.length());
@@ -305,9 +313,11 @@ public final class LimitBuilderTest {
 
     @Test
     public void testArray1() throws Exception {
-        JSONStreamReader parser = new JSONStreamReader(ARRAY_2);
+        JSONLimitStreamReader parser = new JSONLimitStreamReader(ARRAY_2);
         DummyFilter filter = new DummyFilter();
-        Object value = JSONTrampolineBuilder.buildJSONValue(parser, filter);
+        BuilderLimits limits = new BuilderLimits();
+        limits.setFilter(filter);
+        Object value = JSONLimitBuilder.buildJSONValue(parser, limits);
         Assert.assertTrue(value instanceof JSONArray);
 
         JSONArray jsonArray = (JSONArray) value;
@@ -320,7 +330,7 @@ public final class LimitBuilderTest {
 
     @Test
     public void testArray1A() throws Exception {
-        JSONArray jsonArray = JSONTrampolineBuilder.buildJSONArray(ARRAY_2);
+        JSONArray jsonArray = JSONLimitBuilder.buildJSONArray(ARRAY_2);
         Assert.assertNotNull(jsonArray);
 
         Assert.assertEquals(1, jsonArray.length());
@@ -329,9 +339,11 @@ public final class LimitBuilderTest {
 
     @Test
     public void testArray2() throws Exception {
-        JSONStreamReader parser = new JSONStreamReader(ARRAY_3);
+        JSONLimitStreamReader parser = new JSONLimitStreamReader(ARRAY_3);
         DummyFilter filter = new DummyFilter();
-        Object value = JSONTrampolineBuilder.buildJSONValue(parser, filter);
+        BuilderLimits limits = new BuilderLimits();
+        limits.setFilter(filter);
+        Object value = JSONLimitBuilder.buildJSONValue(parser, limits);
         Assert.assertTrue(value instanceof JSONArray);
 
         JSONArray jsonArray = (JSONArray) value;
@@ -350,8 +362,8 @@ public final class LimitBuilderTest {
 
     @Test
     public void testArray2A() throws Exception {
-        JSONStreamReader parser = new JSONStreamReader(ARRAY_3);
-        JSONArray jsonArray = JSONTrampolineBuilder.buildJSONArray(parser);
+        JSONLimitStreamReader parser = new JSONLimitStreamReader(ARRAY_3);
+        JSONArray jsonArray = JSONLimitBuilder.buildJSONArray(parser);
         Assert.assertNotNull(jsonArray);
 
         Assert.assertEquals(4, jsonArray.length());
@@ -363,9 +375,11 @@ public final class LimitBuilderTest {
 
     @Test
     public void testArray3() throws Exception {
-        JSONStreamReader parser = new JSONStreamReader(ARRAY_4);
+        JSONLimitStreamReader parser = new JSONLimitStreamReader(ARRAY_4);
         DummyFilter filter = new DummyFilter();
-        Object value = JSONTrampolineBuilder.buildJSONValue(parser, filter);
+        BuilderLimits limits = new BuilderLimits();
+        limits.setFilter(filter);
+        Object value = JSONLimitBuilder.buildJSONValue(parser, limits);
         Assert.assertTrue(value instanceof JSONArray);
 
         JSONArray jsonArray = (JSONArray) value;
@@ -393,8 +407,8 @@ public final class LimitBuilderTest {
 
     @Test
     public void testArray3A() throws Exception {
-        JSONStreamReader parser = new JSONStreamReader(ARRAY_4);
-        JSONArray jsonArray = JSONTrampolineBuilder.buildJSONArray(parser);
+        JSONLimitStreamReader parser = new JSONLimitStreamReader(ARRAY_4);
+        JSONArray jsonArray = JSONLimitBuilder.buildJSONArray(parser);
         Assert.assertNotNull(jsonArray);
 
         Assert.assertEquals(1, jsonArray.length());
@@ -415,8 +429,8 @@ public final class LimitBuilderTest {
 
     @Test
     public void testSimpleString() throws Exception {
-        JSONStreamReader parser = new JSONStreamReader(STRING_1);
-        Object value = JSONTrampolineBuilder.buildJSONValue(parser);
+        JSONLimitStreamReader parser = new JSONLimitStreamReader(STRING_1);
+        Object value = JSONLimitBuilder.buildJSONValue(parser);
 
         Assert.assertNotNull(value);
         Assert.assertTrue(value instanceof String);
@@ -427,7 +441,7 @@ public final class LimitBuilderTest {
 
     @Test
     public void testSimpleString2() throws Exception {
-        Object value = JSONTrampolineBuilder.buildJSONValue(STRING_2);
+        Object value = JSONLimitBuilder.buildJSONValue(STRING_2);
 
         Assert.assertNotNull(value);
         Assert.assertTrue(value instanceof String);
@@ -438,8 +452,8 @@ public final class LimitBuilderTest {
 
     @Test
     public void testSimpleString3() throws Exception {
-        JSONStreamReader parser = new JSONStreamReader(STRING_3);
-        Object value = JSONTrampolineBuilder.buildJSONValue(parser);
+        JSONLimitStreamReader parser = new JSONLimitStreamReader(STRING_3);
+        Object value = JSONLimitBuilder.buildJSONValue(parser);
 
         Assert.assertNotNull(value);
         Assert.assertTrue(value instanceof String);
@@ -450,8 +464,8 @@ public final class LimitBuilderTest {
 
     @Test
     public void testSimpleString4() throws Exception {
-        JSONStreamReader parser = new JSONStreamReader(STRING_4);
-        Object value = JSONTrampolineBuilder.buildJSONValue(parser);
+        JSONLimitStreamReader parser = new JSONLimitStreamReader(STRING_4);
+        Object value = JSONLimitBuilder.buildJSONValue(parser);
 
         Assert.assertNotNull(value);
         Assert.assertTrue(value instanceof String);
@@ -462,8 +476,8 @@ public final class LimitBuilderTest {
 
     @Test
     public void testSimpleString5() throws Exception {
-        JSONStreamReader parser = new JSONStreamReader(STRING_5);
-        Object value = JSONTrampolineBuilder.buildJSONValue(parser);
+        JSONLimitStreamReader parser = new JSONLimitStreamReader(STRING_5);
+        Object value = JSONLimitBuilder.buildJSONValue(parser);
 
         Assert.assertNotNull(value);
         Assert.assertTrue(value instanceof String);
@@ -474,8 +488,8 @@ public final class LimitBuilderTest {
 
     @Test
     public void testSimpleFalse() throws Exception {
-        JSONStreamReader parser = new JSONStreamReader(FALSE_1);
-        Object value = JSONTrampolineBuilder.buildJSONValue(parser);
+        JSONLimitStreamReader parser = new JSONLimitStreamReader(FALSE_1);
+        Object value = JSONLimitBuilder.buildJSONValue(parser);
 
         Assert.assertNotNull(value);
         Assert.assertTrue(value instanceof Boolean);
@@ -486,8 +500,8 @@ public final class LimitBuilderTest {
 
     @Test
     public void testSimpleTrue() throws Exception {
-        JSONStreamReader parser = new JSONStreamReader(TRUE_1);
-        Object value = JSONTrampolineBuilder.buildJSONValue(parser);
+        JSONLimitStreamReader parser = new JSONLimitStreamReader(TRUE_1);
+        Object value = JSONLimitBuilder.buildJSONValue(parser);
 
         Assert.assertNotNull(value);
         Assert.assertTrue(value instanceof Boolean);
@@ -498,8 +512,8 @@ public final class LimitBuilderTest {
 
     @Test
     public void testSimpleNull() throws Exception {
-        JSONStreamReader parser = new JSONStreamReader(NULL_1);
-        Object value = JSONTrampolineBuilder.buildJSONValue(parser);
+        JSONLimitStreamReader parser = new JSONLimitStreamReader(NULL_1);
+        Object value = JSONLimitBuilder.buildJSONValue(parser);
 
         Assert.assertNotNull(value);
         Assert.assertSame(JSONObject.NULL, value);
@@ -507,8 +521,8 @@ public final class LimitBuilderTest {
 
     @Test
     public void testSimpleNumber() throws Exception {
-        JSONStreamReader parser = new JSONStreamReader(NUMBER_1);
-        Object value = JSONTrampolineBuilder.buildJSONValue(parser);
+        JSONLimitStreamReader parser = new JSONLimitStreamReader(NUMBER_1);
+        Object value = JSONLimitBuilder.buildJSONValue(parser);
 
         Assert.assertNotNull(value);
         Assert.assertTrue(value instanceof Double);
@@ -519,8 +533,8 @@ public final class LimitBuilderTest {
 
     @Test
     public void testSimpleNumber2() throws Exception {
-        JSONStreamReader parser = new JSONStreamReader(NUMBER_2);
-        Object value = JSONTrampolineBuilder.buildJSONValue(parser);
+        JSONLimitStreamReader parser = new JSONLimitStreamReader(NUMBER_2);
+        Object value = JSONLimitBuilder.buildJSONValue(parser);
 
         Assert.assertNotNull(value);
         Assert.assertTrue(value instanceof Integer);
@@ -531,8 +545,8 @@ public final class LimitBuilderTest {
 
     @Test
     public void testSimpleNumber3() throws Exception {
-        JSONStreamReader parser = new JSONStreamReader(NUMBER_3);
-        Object value = JSONTrampolineBuilder.buildJSONValue(parser);
+        JSONLimitStreamReader parser = new JSONLimitStreamReader(NUMBER_3);
+        Object value = JSONLimitBuilder.buildJSONValue(parser);
 
         Assert.assertNotNull(value);
         Assert.assertTrue(value instanceof Integer);
@@ -543,8 +557,8 @@ public final class LimitBuilderTest {
 
     @Test
     public void testSimpleNumber4() throws Exception {
-        JSONStreamReader parser = new JSONStreamReader(NUMBER_4);
-        Object value = JSONTrampolineBuilder.buildJSONValue(parser);
+        JSONLimitStreamReader parser = new JSONLimitStreamReader(NUMBER_4);
+        Object value = JSONLimitBuilder.buildJSONValue(parser);
 
         Assert.assertNotNull(value);
         Assert.assertTrue(value instanceof Double);
@@ -555,8 +569,8 @@ public final class LimitBuilderTest {
 
     @Test
     public void testSimpleNumber5() throws Exception {
-        JSONStreamReader parser = new JSONStreamReader(NUMBER_5);
-        Object value = JSONTrampolineBuilder.buildJSONValue(parser);
+        JSONLimitStreamReader parser = new JSONLimitStreamReader(NUMBER_5);
+        Object value = JSONLimitBuilder.buildJSONValue(parser);
 
         Assert.assertNotNull(value);
         Assert.assertTrue(value instanceof Double);
@@ -567,8 +581,8 @@ public final class LimitBuilderTest {
 
     @Test
     public void testSimpleNumber6() throws Exception {
-        JSONStreamReader parser = new JSONStreamReader(NUMBER_6);
-        Object value = JSONTrampolineBuilder.buildJSONValue(parser);
+        JSONLimitStreamReader parser = new JSONLimitStreamReader(NUMBER_6);
+        Object value = JSONLimitBuilder.buildJSONValue(parser);
 
         Assert.assertNotNull(value);
         Assert.assertTrue(value instanceof Double);
@@ -584,7 +598,7 @@ public final class LimitBuilderTest {
      */
     @Test
     public void testGetArrayValues() {
-        JSONArray jsonArray = JSONTrampolineBuilder.buildJSONArray(
+        JSONArray jsonArray = JSONLimitBuilder.buildJSONArray(
                 new StringReader(ARRAY_TEST_1));
 
         // booleans
@@ -629,10 +643,12 @@ public final class LimitBuilderTest {
      */
     @Test
     public void testJsonObjectValues() {
-        JSONStreamReader parser = new JSONStreamReader(OBJECT_TEST_2);
+        JSONLimitStreamReader parser = new JSONLimitStreamReader(OBJECT_TEST_2);
         DummyFilter filter = new DummyFilter();
-        JSONObject jsonObject = JSONTrampolineBuilder.buildJSONObject(
-                parser, filter);
+        BuilderLimits limits = new BuilderLimits();
+        limits.setFilter(filter);
+        JSONObject jsonObject = JSONLimitBuilder.buildJSONObject(
+                parser, limits);
 
         Assert.assertTrue(jsonObject.has("trueKey"));
 
@@ -713,10 +729,12 @@ public final class LimitBuilderTest {
 
     @Test
     public void testJsonPointerFilter() {
-        JSONStreamReader parser = new JSONStreamReader(new StringReader(TEST_6901));
+        JSONLimitStreamReader parser = new JSONLimitStreamReader(new StringReader(TEST_6901));
         DummyFilter filter = new DummyFilter();
-        JSONObject jsonObject = JSONTrampolineBuilder.buildJSONObject(
-                parser, filter);
+        BuilderLimits limits = new BuilderLimits();
+        limits.setFilter(filter);
+        JSONObject jsonObject = JSONLimitBuilder.buildJSONObject(
+                parser, limits);
 
         Iterator<String> pointers = filter.getPointerList().iterator();
         Assert.assertEquals("/foo", pointers.next());
@@ -742,9 +760,11 @@ public final class LimitBuilderTest {
     @Test
     public void testJsonValidNumberValuesNeitherLongNorIEEE754Compatible() {
         // Valid JSON Numbers, probably should return BigDecimal or BigInteger objects
-        JSONStreamReader parser = new JSONStreamReader(OBJECT_TEST_3);
+        JSONLimitStreamReader parser = new JSONLimitStreamReader(OBJECT_TEST_3);
         DummyFilter filter = new DummyFilter();
-        JSONObject jsonObject = JSONTrampolineBuilder.buildJSONObject(parser, filter);
+        BuilderLimits limits = new BuilderLimits();
+        limits.setFilter(filter);
+        JSONObject jsonObject = JSONLimitBuilder.buildJSONObject(parser, limits);
 
         Assert.assertTrue(jsonObject.has("numberWithDecimals"));
 
@@ -800,7 +820,7 @@ public final class LimitBuilderTest {
                 .toString();
 
         // Unlikely to exhaust memory
-        JSONArray jsonArray = JSONTrampolineBuilder.buildJSONArray(result);
+        JSONArray jsonArray = JSONLimitBuilder.buildJSONArray(result);
 
         Assert.assertEquals(1, jsonArray.length());
     }
@@ -879,7 +899,7 @@ public final class LimitBuilderTest {
     /**
      * Created by run2000 on 2016-08-01.
      */
-    private static class DummyFilter implements TrampolineFilter {
+    private static class DummyFilter implements LimitFilter {
         private final ArrayList<String> pointerList;
 
         public DummyFilter() {

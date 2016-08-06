@@ -671,33 +671,12 @@ public final class BuilderTest {
         Arrays.fill(buff2, ']');
         String result = new StringBuilder()
                 .append(buff)
-/*
-                .append(buff)
-                .append(buff)
-                .append(buff)
-                .append(buff)
-                .append(buff)
-                .append(buff)
-                .append(buff)
-                .append(buff)
-                .append(buff)
-                .append(buff2)
-                .append(buff2)
-                .append(buff2)
-                .append(buff2)
-                .append(buff2)
-                .append(buff2)
-                .append(buff2)
-                .append(buff2)
-                .append(buff2)
-*/
                 .append(buff2)
                 .toString();
 
-        // Unlikely to exhaust memory
-        JSONArray jsonArray = JSONTrampolineBuilder.buildJSONArray(result);
-
-        Assert.assertEquals(1, jsonArray.length());
+        // This runs out of stack quickly!
+        JSONArray jsonArray2 = new JSONArray(result);
+        Assert.assertEquals(1, jsonArray2.length());
     }
 
     @Test
@@ -713,22 +692,6 @@ public final class BuilderTest {
 
         // This runs out of stack eventually
         JSONArray jsonArray2 = JSONObjectBuilder.buildJSONArray(result);
-        Assert.assertEquals(1, jsonArray2.length());
-    }
-
-    @Test
-    public void testLargeArrays3() throws Exception {
-        char[] buff = new char[1000];
-        char[] buff2 = new char[1000];
-        Arrays.fill(buff, '[');
-        Arrays.fill(buff2, ']');
-        String result = new StringBuilder()
-                .append(buff)
-                .append(buff2)
-                .toString();
-
-        // This runs out of stack quickly!
-        JSONArray jsonArray2 = new JSONArray(result);
         Assert.assertEquals(1, jsonArray2.length());
     }
 }
