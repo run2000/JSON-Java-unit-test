@@ -3,6 +3,7 @@ package org.json.stream;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.json.util.JSONPointerUtils;
+import org.json.util.SizedIterable;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -907,13 +908,13 @@ public final class LimitBuilderTest {
         }
 
         @Override
-        public boolean acceptIndex(int index, JSONStreamReader.ParseState state, Iterable<StructureBuilder> stack) {
+        public boolean acceptIndex(int index, JSONStreamReader.ParseState state, SizedIterable<StructureBuilder> stack) {
             pointerList.add(JSONPointerUtils.toJSONPointer(stack));
             return true;
         }
 
         @Override
-        public boolean acceptField(String fieldName, JSONStreamReader.ParseState state, Iterable<StructureBuilder> stack) {
+        public boolean acceptField(String fieldName, JSONStreamReader.ParseState state, SizedIterable<StructureBuilder> stack) {
             pointerList.add(JSONPointerUtils.toJSONPointer(stack));
             return true;//"key2".equals(fieldName);
         }
