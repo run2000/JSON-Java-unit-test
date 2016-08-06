@@ -205,11 +205,9 @@ public class JSONStringerTest {
             key("k").object().key("k").object().key("k").object().key("k").object().key("k").object().
             key("k").object().key("k").object().key("k").object().key("k").object().key("k").object().
             key("k").object().key("k").object().key("k").object().key("k").object().key("k").object();
-            fail("Expected an exception message");
+//            fail("Expected an exception message");
         } catch (JSONException e) {
-            assertTrue("Expected an exception message",
-                    "Nesting too deep.".
-                    equals(e.getMessage()));
+            fail("Expected arbitrary depth success");
         }
     }
 
