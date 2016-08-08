@@ -62,7 +62,7 @@ public final class BuilderTest {
             "\"falseKey\":false,"+
             "\"nullKey\":null,"+
             "\"stringKey\":\"hello world!\","+
-            "\"escapeStringKey\":\"h\be\tllo w\u1234orld!\","+
+            "\"escapeStringKey\":\"h\\be\\tllo w\\u1234orld!\","+
             "\"intKey\":42,"+
             "\"doubleKey\":-23.45e67"+
             "}";
@@ -573,6 +573,23 @@ public final class BuilderTest {
                 new Long(-1).equals(jsonArray.getLong(12)));
 
         Assert.assertTrue("Array value null", jsonArray.isNull(-1));
+    }
+
+    @Test
+    public void testJsonObjectValue0() {
+        JSONObject jsonObject = JSONObjectBuilder.buildJSONObject(OBJECT_TEST_1);
+
+        Assert.assertTrue("falseKey should be false", !jsonObject.getBoolean("falseKey"));
+        Assert.assertTrue("nullKey should exist", jsonObject.has("nullKey"));
+        Assert.assertTrue("nullKey should be null", jsonObject.get("nullKey") == JSONObject.NULL);
+        Assert.assertTrue("stringKey should be string",
+                jsonObject.getString("stringKey").equals("hello world!"));
+        Assert.assertTrue("escapeStringKey should be string",
+                jsonObject.getString("escapeStringKey").equals("h\be\tllo w\u1234orld!"));
+        Assert.assertTrue("intKey should be int",
+                jsonObject.optInt("intKey") == 42);
+        Assert.assertTrue("doubleKey should be double",
+                jsonObject.getDouble("doubleKey") == -23.45e67);
     }
 
     /**
