@@ -754,7 +754,9 @@ public final class LimitBuilderTest {
         JSONObject jsonObject = JSONLimitBuilder.buildJSONObject(
                 parser, limits);
 
-        Iterator<String> pointers = filter.getPointerList().iterator();
+        ArrayList<String> pointerList = filter.getPointerList();
+        Iterator<String> pointers = pointerList.iterator();
+
         Assert.assertEquals("/foo", pointers.next());
         Assert.assertEquals("/foo/0", pointers.next());
         Assert.assertEquals("/foo/1", pointers.next());
@@ -767,6 +769,21 @@ public final class LimitBuilderTest {
         Assert.assertEquals("/k\"l", pointers.next());
         Assert.assertEquals("/ ", pointers.next());
         Assert.assertEquals("/m~0n", pointers.next());
+
+        pointers = pointerList.iterator();
+        Assert.assertTrue(jsonObject.query(pointers.next()) instanceof JSONArray);
+        Assert.assertEquals(jsonObject.query(pointers.next()), "bar");
+        Assert.assertEquals(jsonObject.query(pointers.next()), "baz");
+        Assert.assertEquals(jsonObject.query(pointers.next()), Integer.valueOf(0));
+        Assert.assertEquals(jsonObject.query(pointers.next()), Integer.valueOf(1));
+        Assert.assertEquals(jsonObject.query(pointers.next()), Integer.valueOf(2));
+        Assert.assertEquals(jsonObject.query(pointers.next()), Integer.valueOf(3));
+        Assert.assertEquals(jsonObject.query(pointers.next()), Integer.valueOf(4));
+        Assert.assertEquals(jsonObject.query(pointers.next()), Integer.valueOf(5));
+        Assert.assertEquals(jsonObject.query(pointers.next()), Integer.valueOf(6));
+        Assert.assertEquals(jsonObject.query(pointers.next()), Integer.valueOf(7));
+        Assert.assertEquals(jsonObject.query(pointers.next()), Integer.valueOf(8));
+        Assert.assertFalse(pointers.hasNext());
     }
 
     /**
