@@ -1,7 +1,6 @@
 package org.json.junit;
 
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
@@ -10,7 +9,6 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
-import java.util.List;
 import java.util.Map;
 
 import org.json.JSONArray;
@@ -19,15 +17,15 @@ import org.json.JSONObject;
 import org.json.JSONPointerException;
 import org.junit.Test;
 
-import com.jayway.jsonpath.Configuration;
-import com.jayway.jsonpath.JsonPath;
+//import com.jayway.jsonpath.Configuration;
+//import com.jayway.jsonpath.JsonPath;
 
 
 /**
  * Tests for JSON-Java JSONArray.java
  */
 public class JSONArrayTest {
-    String arrayStr = 
+    static final String arrayStr =
             "["+
                 "true,"+
                 "false,"+
@@ -322,11 +320,8 @@ public class JSONArrayTest {
         String joinStr = jsonArray.join(",");
 
         // validate JSON
-        /**
-         * Don't need to remake the JSONArray to perform the parsing
-         */
-        Object doc = Configuration.defaultConfiguration().jsonProvider().parse("["+joinStr+"]");
-        assertTrue("expected 13 items in top level object", ((List<?>)(JsonPath.read(doc, "$"))).size() == 13);
+        jsonArray = new JSONArray("["+joinStr+"]");
+        assertEquals("expected 13 items in top level object", 13, jsonArray.toList().size());
         assertTrue("expected true", Boolean.TRUE.equals(jsonArray.query("/0")));
         assertTrue("expected false", Boolean.FALSE.equals(jsonArray.query("/1")));
         assertTrue("expected \"true\"", "true".equals(jsonArray.query("/2")));
@@ -336,9 +331,11 @@ public class JSONArrayTest {
         assertTrue("expected \"23.45\"", "23.45".equals(jsonArray.query("/6")));
         assertTrue("expected 42", Integer.valueOf(42).equals(jsonArray.query("/7")));
         assertTrue("expected \"43\"", "43".equals(jsonArray.query("/8")));
-        assertTrue("expected 1 item in [9]", ((List<?>)(JsonPath.read(doc, "$[9]"))).size() == 1);
+//        assertTrue("expected 1 item in [9]", ((List<?>)(JsonPath.read(doc, "$[9]"))).size() == 1);
+        assertEquals("expected 1 item in [9]", 1, ((JSONArray)(jsonArray.query("/9"))).toList().size());
         assertTrue("expected world", "world".equals(jsonArray.query("/9/0")));
-        assertTrue("expected 4 items in [10]", ((Map<?,?>)(JsonPath.read(doc, "$[10]"))).size() == 4);
+//        assertTrue("expected 4 items in [10]", ((Map<?,?>)(JsonPath.read(doc, "$[10]"))).size() == 4);
+        assertEquals("expected 4 items in [10]", 4, ((JSONObject)(jsonArray.query("/10"))).toMap().size());
         assertTrue("expected value1", "value1".equals(jsonArray.query("/10/key1")));
         assertTrue("expected value2", "value2".equals(jsonArray.query("/10/key2")));
         assertTrue("expected value3", "value3".equals(jsonArray.query("/10/key3")));
@@ -358,6 +355,8 @@ public class JSONArrayTest {
         assertTrue("expected JSONArray length 13", jsonArray.length() == 13);
         JSONArray nestedJsonArray = jsonArray.getJSONArray(9);
         assertTrue("expected JSONArray length 1", nestedJsonArray.length() == 1);
+
+        System.out.println(jsonArray.toString(2));
     }
 
     /**
@@ -484,24 +483,29 @@ public class JSONArrayTest {
         jsonArray.put(collection);
 
         // validate JSON
-        Object doc = Configuration.defaultConfiguration().jsonProvider().parse(jsonArray.toString());
-        assertTrue("expected 10 top level items", ((List<?>)(JsonPath.read(doc, "$"))).size() == 10);
+//        Object doc = Configuration.defaultConfiguration().jsonProvider().parse(jsonArray.toString());
+//        assertTrue("expected 10 top level items", ((List<?>)(JsonPath.read(doc, "$"))).size() == 10);
+        assertEquals("expected 10 top level items", 10, jsonArray.toList().size());
         assertTrue("expected true", Boolean.TRUE.equals(jsonArray.query("/0")));
         assertTrue("expected false", Boolean.FALSE.equals(jsonArray.query("/1")));
-        assertTrue("expected 2 items in [2]", ((List<?>)(JsonPath.read(doc, "$[2]"))).size() == 2);
+//        assertTrue("expected 2 items in [2]", ((List<?>)(JsonPath.read(doc, "$[2]"))).size() == 2);
+        assertEquals("expected 2 items in [2]", 2, ((JSONArray)(jsonArray.query("/2"))).toList().size());
         assertTrue("expected hello", "hello".equals(jsonArray.query("/2/0")));
         assertTrue("expected world", "world".equals(jsonArray.query("/2/1")));
         assertTrue("expected 2.5", Double.valueOf(2.5).equals(jsonArray.query("/3")));
         assertTrue("expected 1", Integer.valueOf(1).equals(jsonArray.query("/4")));
         assertTrue("expected 45", Long.valueOf(45).equals(jsonArray.query("/5")));
         assertTrue("expected objectPut", "objectPut".equals(jsonArray.query("/6")));
-        assertTrue("expected 3 items in [7]", ((Map<?,?>)(JsonPath.read(doc, "$[7]"))).size() == 3);
+//        assertTrue("expected 3 items in [7]", ((Map<?,?>)(JsonPath.read(doc, "$[7]"))).size() == 3);
+        assertEquals("expected 3 items in [7]", 3, ((JSONObject)(jsonArray.query("/7"))).toMap().size());
         assertTrue("expected val10", "val10".equals(jsonArray.query("/7/key10")));
         assertTrue("expected val20", "val20".equals(jsonArray.query("/7/key20")));
         assertTrue("expected val30", "val30".equals(jsonArray.query("/7/key30")));
-        assertTrue("expected 1 item in [8]", ((Map<?,?>)(JsonPath.read(doc, "$[8]"))).size() == 1);
+//        assertTrue("expected 1 item in [8]", ((Map<?,?>)(JsonPath.read(doc, "$[8]"))).size() == 1);
+        assertEquals("expected 1 item in [8]", 1, ((JSONObject)(jsonArray.query("/8"))).toMap().size());
         assertTrue("expected v1", "v1".equals(jsonArray.query("/8/k1")));
-        assertTrue("expected 2 items in [9]", ((List<?>)(JsonPath.read(doc, "$[9]"))).size() == 2);
+//        assertTrue("expected 2 items in [9]", ((List<?>)(JsonPath.read(doc, "$[9]"))).size() == 2);
+        assertEquals("expected 2 items in [9]", 2, ((JSONArray)(jsonArray.query("/9"))).toList().size());
         assertTrue("expected 1", Integer.valueOf(1).equals(jsonArray.query("/9/0")));
         assertTrue("expected 2", Integer.valueOf(2).equals(jsonArray.query("/9/1")));
     }
@@ -561,11 +565,12 @@ public class JSONArrayTest {
         } catch(Exception ignored) {}
 
         // validate JSON
-        Object doc = Configuration.defaultConfiguration().jsonProvider().parse(jsonArray.toString());
-        assertTrue("expected 11 top level items", ((List<?>)(JsonPath.read(doc, "$"))).size() == 11);
+//        Object doc = Configuration.defaultConfiguration().jsonProvider().parse(jsonArray.toString());
+        assertEquals("expected 11 top level items", 11, jsonArray.toList().size());
         assertTrue("expected true", Boolean.TRUE.equals(jsonArray.query("/0")));
         assertTrue("expected false", Boolean.FALSE.equals(jsonArray.query("/1")));
-        assertTrue("expected 2 items in [2]", ((List<?>)(JsonPath.read(doc, "$[2]"))).size() == 2);
+//        assertTrue("expected 2 items in [2]", ((List<?>)(JsonPath.read(doc, "$[2]"))).size() == 2);
+        assertEquals("expected 2 items in [2]", 2, ((JSONArray)(jsonArray.query("/2"))).toList().size());
         assertTrue("expected hello", "hello".equals(jsonArray.query("/2/0")));
         assertTrue("expected world", "world".equals(jsonArray.query("/2/1")));
         assertTrue("expected 2.5", Double.valueOf(2.5).equals(jsonArray.query("/3")));
@@ -573,14 +578,17 @@ public class JSONArrayTest {
         assertTrue("expected 45", Long.valueOf(45).equals(jsonArray.query("/5")));
         assertTrue("expected objectPut", "objectPut".equals(jsonArray.query("/6")));
         assertTrue("expected null", JSONObject.NULL.equals(jsonArray.query("/7")));
-        assertTrue("expected 3 items in [8]", ((Map<?,?>)(JsonPath.read(doc, "$[8]"))).size() == 3);
+//        assertTrue("expected 3 items in [8]", ((Map<?,?>)(JsonPath.read(doc, "$[8]"))).size() == 3);
+        assertEquals("expected 3 items in [8]", 3, ((JSONObject)(jsonArray.query("/8"))).toMap().size());
         assertTrue("expected val10", "val10".equals(jsonArray.query("/8/key10")));
         assertTrue("expected val20", "val20".equals(jsonArray.query("/8/key20")));
         assertTrue("expected val30", "val30".equals(jsonArray.query("/8/key30")));
-        assertTrue("expected 2 items in [9]", ((List<?>)(JsonPath.read(doc, "$[9]"))).size() == 2);
+//        assertTrue("expected 2 items in [9]", ((List<?>)(JsonPath.read(doc, "$[9]"))).size() == 2);
+        assertEquals("expected 2 items in [9]", 2, ((JSONArray)(jsonArray.query("/9"))).toList().size());
         assertTrue("expected 1", Integer.valueOf(1).equals(jsonArray.query("/9/0")));
         assertTrue("expected 2", Integer.valueOf(2).equals(jsonArray.query("/9/1")));
-        assertTrue("expected 1 item in [10]", ((Map<?,?>)(JsonPath.read(doc, "$[10]"))).size() == 1);
+//        assertTrue("expected 1 item in [10]", ((Map<?,?>)(JsonPath.read(doc, "$[10]"))).size() == 1);
+        assertEquals("expected 1 item in [10]", 1, ((JSONObject)(jsonArray.query("/10"))).toMap().size());
         assertTrue("expected v1", "v1".equals(jsonArray.query("/10/k1")));
     }
 
@@ -660,8 +668,9 @@ public class JSONArrayTest {
         JSONArray jsonArray = new JSONArray(myObject);
 
         // validate JSON
-        Object doc = Configuration.defaultConfiguration().jsonProvider().parse(jsonArray.toString());
-        assertTrue("expected 7 top level items", ((List<?>)(JsonPath.read(doc, "$"))).size() == 7);
+//        Object doc = Configuration.defaultConfiguration().jsonProvider().parse(jsonArray.toString());
+//        assertTrue("expected 7 top level items", ((List<?>)(JsonPath.read(doc, "$"))).size() == 7);
+        assertTrue("expected 7 top level items", jsonArray.toList().size() == 7);
         assertTrue("expected 1", Integer.valueOf(1).equals(jsonArray.query("/0")));
         assertTrue("expected 2", Integer.valueOf(2).equals(jsonArray.query("/1")));
         assertTrue("expected 3", Integer.valueOf(3).equals(jsonArray.query("/2")));

@@ -2,12 +2,11 @@ package org.json.junit;
 
 import static org.junit.Assert.*;
 
-import java.util.*;
-
 import org.json.*;
 import org.junit.Test;
+import org.junit.runner.JUnitCore;
 
-import com.jayway.jsonpath.*;
+//import com.jayway.jsonpath.*;
 
 
 /**
@@ -26,10 +25,10 @@ public class JSONStringerTest {
         try {
             jsonStringer.key(null);
             assertTrue("Expected an exception", false);
-        } catch (JSONException e) {
-            assertTrue("Expected an exception message",
-                    "Null key.".
-                    equals(e.getMessage()));
+        } catch (JSONWriterException e) {
+            assertEquals("Expected an exception message",
+                    "Null key.",
+                    e.getMessage());
         }
     }
 
@@ -43,15 +42,15 @@ public class JSONStringerTest {
         try {
             jsonStringer.key("hi");
             assertTrue("Expected an exception", false);
-        } catch (JSONException e) {
-            assertTrue("Expected an exception message",
-                    "Misplaced key.".
-                    equals(e.getMessage()));
+        } catch (JSONWriterException e) {
+            assertEquals("Expected an exception message",
+                    "Misplaced key.",
+                    e.getMessage());
         }
     }
 
     /**
-     * Missplace an array.
+     * Misplace an array.
      * Expects a JSONException
      */
     @Test
@@ -60,10 +59,11 @@ public class JSONStringerTest {
         jsonStringer.object().endObject();
         try {
             jsonStringer.array();
-        } catch (JSONException e) {
-            assertTrue("Expected an exception message",
-                    "Misplaced array.".
-                    equals(e.getMessage()));
+            fail("Should be done");
+        } catch (JSONWriterException e) {
+            assertEquals("Expected an exception message",
+                    "Misplaced array.",
+                    e.getMessage());
         }
     }
 
@@ -77,10 +77,11 @@ public class JSONStringerTest {
         jsonStringer.object();
         try {
             jsonStringer.endArray();
-        } catch (JSONException e) {
-            assertTrue("Expected an exception message",
-                    "Misplaced endArray.".
-                    equals(e.getMessage()));
+            fail("Should be endObject");
+        } catch (JSONWriterException e) {
+            assertEquals("Expected an exception message",
+                    "Misplaced endArray.",
+                    e.getMessage());
         }
     }
 
@@ -94,10 +95,11 @@ public class JSONStringerTest {
         jsonStringer.array();
         try {
             jsonStringer.endObject();
-        } catch (JSONException e) {
-            assertTrue("Expected an exception message",
-                    "Misplaced endObject.".
-                    equals(e.getMessage()));
+            fail("Should be endArray");
+        } catch (JSONWriterException e) {
+            assertEquals("Expected an exception message",
+                    "Misplaced endObject.",
+                    e.getMessage());
         }
     }
 
@@ -111,10 +113,186 @@ public class JSONStringerTest {
         jsonStringer.object().endObject();
         try {
             jsonStringer.object();
+            fail("Should be done");
+        } catch (JSONWriterException e) {
+            assertEquals("Expected an exception message",
+                    "Misplaced object.",
+                    e.getMessage());
+        }
+    }
+
+    /**
+     * Missplace a null value.
+     * Expects a JSONException.
+     */
+    @Test
+    public void missplacedNullValueException() {
+        JSONStringer jsonStringer = new JSONStringer();
+
+        try {
+            jsonStringer.nullValue();
+            fail("Should be done");
+        } catch (JSONWriterException e) {
+            assertEquals("Expected an exception message",
+                    "Value out of sequence.",
+                    e.getMessage());
+        }
+    }
+
+    /**
+     * Write a null value.
+     * Expects a result.
+     */
+    @Test
+    public void intentionalNullValue() {
+        JSONStringer jsonStringer = new JSONStringer(true);
+
+        try {
+            String result = jsonStringer.nullValue().toString();
+            assertEquals("null", result);
         } catch (JSONException e) {
-            assertTrue("Expected an exception message",
-                    "Misplaced object.".
-                    equals(e.getMessage()));
+            assertNull("Expected an exception message",
+                    e);
+        }
+    }
+
+    /**
+     * Missplace a boolean value.
+     * Expects a JSONException.
+     */
+    @Test
+    public void missplacedBooleanValueException() {
+        JSONStringer jsonStringer = new JSONStringer();
+
+        try {
+            jsonStringer.value(false);
+            fail("Should be done");
+        } catch (JSONWriterException e) {
+            assertEquals("Expected an exception message",
+                    "Value out of sequence.",
+                    e.getMessage());
+        }
+    }
+
+    /**
+     * Write a boolean value.
+     * Expects a result.
+     */
+    @Test
+    public void intentionalBooleanValue() {
+        JSONStringer jsonStringer = new JSONStringer(true);
+
+        try {
+            String result = jsonStringer.value(true).toString();
+            assertEquals("true", result);
+        } catch (JSONException e) {
+            assertNull("Expected an exception message",
+                    e);
+        }
+    }
+
+    /**
+     * Missplace a long value.
+     * Expects a JSONException.
+     */
+    @Test
+    public void missplacedLongValueException() {
+        JSONStringer jsonStringer = new JSONStringer();
+
+        try {
+            jsonStringer.value(24L);
+            fail("Should be done");
+        } catch (JSONWriterException e) {
+            assertEquals("Expected an exception message",
+                    "Value out of sequence.",
+                    e.getMessage());
+        }
+    }
+
+    /**
+     * Write a long value.
+     * Expects a result.
+     */
+    @Test
+    public void intentionalLongValue() {
+        JSONStringer jsonStringer = new JSONStringer(true);
+
+        try {
+            String result = jsonStringer.value(24L).toString();
+            assertEquals("24", result);
+        } catch (JSONException e) {
+            assertNull("Expected an exception message",
+                    e);
+        }
+    }
+
+    /**
+     * Missplace a double value.
+     * Expects a JSONException.
+     */
+    @Test
+    public void missplacedDoubleValueException() {
+        JSONStringer jsonStringer = new JSONStringer();
+
+        try {
+            jsonStringer.value(3.14d);
+            fail("Should be done");
+        } catch (JSONWriterException e) {
+            assertEquals("Expected an exception message",
+                    "Value out of sequence.",
+                    e.getMessage());
+        }
+    }
+
+    /**
+     * Write a double value.
+     * Expects a result.
+     */
+    @Test
+    public void intentionalDoubleValue() {
+        JSONStringer jsonStringer = new JSONStringer(true);
+
+        try {
+            String result = jsonStringer.value(3.14d).toString();
+            assertEquals("3.14", result);
+        } catch (JSONException e) {
+            assertNull("Expected an exception message",
+                    e);
+        }
+    }
+
+    /**
+     * Missplace a String value.
+     * Expects a JSONException.
+     */
+    @Test
+    public void missplacedStringValueException() {
+        JSONStringer jsonStringer = new JSONStringer();
+
+        try {
+            jsonStringer.value("testing 123");
+            fail("Should be done");
+        } catch (JSONWriterException e) {
+            assertEquals("Expected an exception message",
+                    "Value out of sequence.",
+                    e.getMessage());
+        }
+    }
+
+    /**
+     * Write a String value.
+     * Expects a result.
+     */
+    @Test
+    public void intentionalStringValue() {
+        JSONStringer jsonStringer = new JSONStringer(true);
+
+        try {
+            String result = jsonStringer.value("testing 123").toString();
+            assertEquals("\"testing 123\"", result);
+        } catch (JSONException e) {
+            assertNull("Expected an exception message",
+                    e);
         }
     }
 
@@ -136,26 +314,8 @@ public class JSONStringerTest {
             key("k").object().key("k").object().key("k").object().key("k").object().key("k").object().
             key("k").object().key("k").object().key("k").object().key("k").object().key("k").object().
             key("k").object().key("k").object().key("k").object().key("k").object().key("k").object().
-            key("k").object().key("k").object().key("k").object().key("k").object().key("k").object().
-            key("k").object().key("k").object().key("k").object().key("k").object().key("k").object().
-            key("k").object().key("k").object().key("k").object().key("k").object().key("k").object().
-            key("k").object().key("k").object().key("k").object().key("k").object().key("k").object().
-            key("k").object().key("k").object().key("k").object().key("k").object().key("k").object().
-            key("k").object().key("k").object().key("k").object().key("k").object().key("k").object().
-            key("k").object().key("k").object().key("k").object().key("k").object().key("k").object().
-            key("k").object().key("k").object().key("k").object().key("k").object().key("k").object().
-            key("k").object().key("k").object().key("k").object().key("k").object().key("k").object().
-            key("k").object().key("k").object().key("k").object().key("k").object().key("k").object().
-            key("k").object().key("k").object().key("k").object().key("k").object().key("k").object().
-            key("k").object().key("k").object().key("k").object().key("k").object().key("k").object().
-            key("k").object().key("k").object().key("k").object().key("k").object().key("k").object().
-            key("k").object().key("k").object().key("k").object().key("k").object().key("k").object().
-            key("k").object().key("k").object().key("k").object().key("k").object().key("k").object().
-            key("k").object().key("k").object().key("k").object().key("k").object().key("k").object().
-            key("k").object().key("k").object().key("k").object().key("k").object().key("k").object().
-            key("k").object().key("k").object().key("k").object().key("k").object().key("k").object().
-            key("k").object().key("k").object().key("k").object().key("k").object().key("k").object().
-            key("k").object().key("k").object().key("k").object().key("k").object().key("k").object().
+            key("k").object().key("k").object().key("k").object().key("k").object().key("k").object();
+            s.key("k").object().key("k").object().key("k").object().key("k").object().key("k").object().
             key("k").object().key("k").object().key("k").object().key("k").object().key("k").object().
             key("k").object().key("k").object().key("k").object().key("k").object().key("k").object().
             key("k").object().key("k").object().key("k").object().key("k").object().key("k").object().
@@ -174,6 +334,16 @@ public class JSONStringerTest {
             key("k").object().key("k").object().key("k").object().key("k").object().key("k").object().
             key("k").object().key("k").object().key("k").object().key("k").object().key("k").object().
             key("k").object().key("k").object().key("k").object().key("k").object().key("k").object().
+            key("k").object().key("k").object().key("k").object().key("k").object().key("k").object();
+            s.key("k").object().key("k").object().key("k").object().key("k").object().key("k").object().
+            key("k").object().key("k").object().key("k").object().key("k").object().key("k").object().
+            key("k").object().key("k").object().key("k").object().key("k").object().key("k").object().
+            key("k").object().key("k").object().key("k").object().key("k").object().key("k").object().
+            key("k").object().key("k").object().key("k").object().key("k").object().key("k").object().
+            key("k").object().key("k").object().key("k").object().key("k").object().key("k").object().
+            key("k").object().key("k").object().key("k").object().key("k").object().key("k").object().
+            key("k").object().key("k").object().key("k").object().key("k").object().key("k").object();
+            s.key("k").object().key("k").object().key("k").object().key("k").object().key("k").object().
             key("k").object().key("k").object().key("k").object().key("k").object().key("k").object().
             key("k").object().key("k").object().key("k").object().key("k").object().key("k").object().
             key("k").object().key("k").object().key("k").object().key("k").object().key("k").object().
@@ -182,6 +352,8 @@ public class JSONStringerTest {
             key("k").object().key("k").object().key("k").object().key("k").object().key("k").object().
             key("k").object().key("k").object().key("k").object().key("k").object().key("k").object().
             key("k").object().key("k").object().key("k").object().key("k").object().key("k").object().
+            key("k").object().key("k").object().key("k").object().key("k").object().key("k").object();
+            s.key("k").object().key("k").object().key("k").object().key("k").object().key("k").object().
             key("k").object().key("k").object().key("k").object().key("k").object().key("k").object().
             key("k").object().key("k").object().key("k").object().key("k").object().key("k").object().
             key("k").object().key("k").object().key("k").object().key("k").object().key("k").object().
@@ -190,12 +362,18 @@ public class JSONStringerTest {
             key("k").object().key("k").object().key("k").object().key("k").object().key("k").object().
             key("k").object().key("k").object().key("k").object().key("k").object().key("k").object().
             key("k").object().key("k").object().key("k").object().key("k").object().key("k").object().
+            key("k").object().key("k").object().key("k").object().key("k").object().key("k").object();
+            s.key("k").object().key("k").object().key("k").object().key("k").object().key("k").object().
             key("k").object().key("k").object().key("k").object().key("k").object().key("k").object().
             key("k").object().key("k").object().key("k").object().key("k").object().key("k").object().
             key("k").object().key("k").object().key("k").object().key("k").object().key("k").object().
             key("k").object().key("k").object().key("k").object().key("k").object().key("k").object().
             key("k").object().key("k").object().key("k").object().key("k").object().key("k").object().
             key("k").object().key("k").object().key("k").object().key("k").object().key("k").object().
+            key("k").object().key("k").object().key("k").object().key("k").object().key("k").object().
+            key("k").object().key("k").object().key("k").object().key("k").object().key("k").object().
+            key("k").object().key("k").object().key("k").object().key("k").object().key("k").object();
+            s.key("k").object().key("k").object().key("k").object().key("k").object().key("k").object().
             key("k").object().key("k").object().key("k").object().key("k").object().key("k").object().
             key("k").object().key("k").object().key("k").object().key("k").object().key("k").object().
             key("k").object().key("k").object().key("k").object().key("k").object().key("k").object().
@@ -231,8 +409,9 @@ public class JSONStringerTest {
         JSONObject jsonObject = new JSONObject(str);
 
         // validate JSON content
-        Object doc = Configuration.defaultConfiguration().jsonProvider().parse(jsonObject.toString());
-        assertTrue("expected 7 top level items", ((Map<?,?>)(JsonPath.read(doc, "$"))).size() == 7);
+//        Object doc = Configuration.defaultConfiguration().jsonProvider().parse(jsonObject.toString());
+//        assertTrue("expected 7 top level items", ((Map<?,?>)(JsonPath.read(doc, "$"))).size() == 7);
+        assertEquals("expected 7 top level items", 7, jsonObject.toMap().size());
         assertTrue("expected true", Boolean.TRUE.equals(jsonObject.query("/trueValue")));
         assertTrue("expected false", Boolean.FALSE.equals(jsonObject.query("/falseValue")));
         assertTrue("expected null", JSONObject.NULL.equals(jsonObject.query("/nullValue")));
@@ -261,14 +440,27 @@ public class JSONStringerTest {
         JSONArray jsonArray = new JSONArray(str);
 
         // validate JSON content
-        Object doc = Configuration.defaultConfiguration().jsonProvider().parse(jsonArray.toString());
-        assertTrue("expected 6 top level items", ((List<?>)(JsonPath.read(doc, "$"))).size() == 6);
+//        Object doc = Configuration.defaultConfiguration().jsonProvider().parse(jsonArray.toString());
+//        assertTrue("expected 6 top level items", ((List<?>)(JsonPath.read(doc, "$"))).size() == 6);
+        assertEquals("expected 6 top level items", 6, jsonArray.toList().size());
         assertTrue("expected true", Boolean.TRUE.equals(jsonArray.query("/0")));
         assertTrue("expected false", Boolean.FALSE.equals(jsonArray.query("/1")));
         assertTrue("expected null", JSONObject.NULL.equals(jsonArray.query("/2")));
         assertTrue("expected hello world!", "hello world!".equals(jsonArray.query("/3")));
         assertTrue("expected 42", Integer.valueOf(42).equals(jsonArray.query("/4")));
         assertTrue("expected -23.45e67", Double.valueOf(-23.45e67).equals(jsonArray.query("/5")));
+    }
+
+    @Test
+    public void writeAppendable() {
+        MyJSONAppendable app = new MyJSONAppendable();
+        JSONStringer writer = new JSONStringer(2);
+
+        writer.object();
+        writer.key("data").value(app);
+        writer.endObject();
+
+//        System.out.println(writer.toString());
     }
 
     /**
@@ -314,12 +506,18 @@ public class JSONStringerTest {
         JSONObject jsonObject = new JSONObject(str);
 
         // validate JSON content
-        Object doc = Configuration.defaultConfiguration().jsonProvider().parse(jsonObject.toString());
-        assertTrue("expected 8 top level items", ((Map<?,?>)(JsonPath.read(doc, "$"))).size() == 8);
-        assertTrue("expected 4 object2 items", ((Map<?,?>)(JsonPath.read(doc, "$.object2"))).size() == 4);
-        assertTrue("expected 5 array1 items", ((List<?>)(JsonPath.read(doc, "$.object2.array1"))).size() == 5);
-        assertTrue("expected 4 array[2] items", ((Map<?,?>)(JsonPath.read(doc, "$.object2.array1[2]"))).size() == 4);
-        assertTrue("expected 4 array1[2].array2 items", ((List<?>)(JsonPath.read(doc, "$.object2.array1[2].array2"))).size() == 4);
+//        Object doc = Configuration.defaultConfiguration().jsonProvider().parse(jsonObject.toString());
+//        assertTrue("expected 8 top level items", ((Map<?,?>)(JsonPath.read(doc, "$"))).size() == 8);
+//        assertTrue("expected 4 object2 items", ((Map<?,?>)(JsonPath.read(doc, "$.object2"))).size() == 4);
+//        assertTrue("expected 5 array1 items", ((List<?>)(JsonPath.read(doc, "$.object2.array1"))).size() == 5);
+//        assertTrue("expected 4 array[2] items", ((Map<?,?>)(JsonPath.read(doc, "$.object2.array1[2]"))).size() == 4);
+//        assertTrue("expected 4 array1[2].array2 items", ((List<?>)(JsonPath.read(doc, "$.object2.array1[2].array2"))).size() == 4);
+
+        assertEquals("expected 8 top level items", 8, jsonObject.toMap().size());
+        assertEquals("expected 4 /object2 items", 4, ((JSONObject)jsonObject.query("/object2")).toMap().size());
+        assertEquals("expected 5 /object2/array1 items", 5, ((JSONArray)jsonObject.query("/object2/array1")).toList().size());
+        assertEquals("expected 4 /object2/array1/2 items", 4, ((JSONObject)jsonObject.query("/object2/array1/2")).toMap().size());
+        assertEquals("expected 4 /object2/array1/2/array2 items", 4, ((JSONArray)jsonObject.query("/object2/array1/2/array2")).toList().size());
         assertTrue("expected true", Boolean.TRUE.equals(jsonObject.query("/trueValue")));
         assertTrue("expected false", Boolean.FALSE.equals(jsonObject.query("/falseValue")));
         assertTrue("expected null", JSONObject.NULL.equals(jsonObject.query("/nullValue")));
@@ -343,4 +541,14 @@ public class JSONStringerTest {
         assertTrue("expected 4", Integer.valueOf(4).equals(jsonObject.query("/object2/array1/4")));
     }
 
+    public static void main(String[] args) throws Exception {
+        //
+        JUnitCore.runClasses(JSONStringerTest.class);
+
+        Thread.sleep(8000L);
+
+        for(int i = 0; i < 20000; i++) {
+            JUnitCore.runClasses(JSONStringerTest.class);
+        }
+    }
 }

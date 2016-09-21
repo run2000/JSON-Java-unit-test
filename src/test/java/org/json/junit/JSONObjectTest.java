@@ -1,5 +1,6 @@
 package org.json.junit;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
@@ -25,6 +26,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.json.JSONPointerException;
+import org.json.JSONString;
 import org.json.XML;
 import org.junit.Test;
 
@@ -43,7 +45,7 @@ public class JSONObjectTest {
      * Nothing good is expected to happen.
      * Expects NullPointerException
      */
-    @Test(expected=NullPointerException.class)
+    @Test(expected = NullPointerException.class)
     public void jsonObjectByNullBean() {
         MyBean myBean = null;
         new JSONObject(myBean);
@@ -58,9 +60,302 @@ public class JSONObjectTest {
         assertTrue("jsonObject should be empty", jsonObject.length() == 0);
     }
 
+    @Test
+    public void jsonExample1() {
+        String str =
+                "{\n" +
+                        "    \"glossary\": {\n" +
+                        "        \"title\": \"example glossary\",\n" +
+                        "        \"GlossDiv\": {\n" +
+                        "            \"title\": \"S\",\n" +
+                        "            \"GlossList\": {\n" +
+                        "                \"GlossEntry\": {\n" +
+                        "                    \"ID\": \"SGML\",\n" +
+                        "                    \"SortAs\": \"SGML\",\n" +
+                        "                    \"GlossTerm\": \"Standard Generalized Markup Language\",\n" +
+                        "                    \"Acronym\": \"SGML\",\n" +
+                        "                    \"Abbrev\": \"ISO 8879:1986\",\n" +
+                        "                    \"GlossDef\": {\n" +
+                        "                        \"para\": \"A meta-markup language, used to create markup languages such as DocBook.\",\n" +
+                        "                    \"GlossSeeAlso\": [\"GML\", \"XML\"]\n" +
+                        "                    },\n" +
+                        "                    \"GlossSee\": \"markup\"\n" +
+                        "                }\n" +
+                        "            }\n" +
+                        "        }\n" +
+                        "    }\n" +
+                        "}";
+
+        JSONObject jsonObject = new JSONObject(str);
+        System.out.println(jsonObject.toString(4));
+
+    }
+
+    @Test
+    public void jsonExample2() {
+        String str =
+                "{\"menu\": {\n" +
+                        "  \"id\": \"file\",\n" +
+                        "  \"value\": \"File\",\n" +
+                        "  \"popup\": {\n" +
+                        "    \"menuitem\": [\n" +
+                        "      {\"value\": \"New\", \"onclick\": \"CreateNewDoc()\"},\n" +
+                        "      {\"value\": \"Open\", \"onclick\": \"OpenDoc()\"},\n" +
+                        "      {\"value\": \"Close\", \"onclick\": \"CloseDoc()\"}\n" +
+                        "    ]\n" +
+                        "  }\n" +
+                        "}}";
+
+        JSONObject jsonObject = new JSONObject(str);
+        System.out.println(jsonObject.toString(2));
+
+    }
+
+    @Test
+    public void jsonExample3() {
+        String str =
+                "{\"widget\": {\n" +
+                        "    \"debug\": \"on\",\n" +
+                        "    \"window\": {\n" +
+                        "        \"title\": \"Sample Konfabulator Widget\",\n" +
+                        "        \"name\": \"main_window\",\n" +
+                        "        \"width\": 500,\n" +
+                        "        \"height\": 500\n" +
+                        "    },\n" +
+                        "    \"image\": { \n" +
+                        "        \"src\": \"Images/Sun.png\",\n" +
+                        "        \"name\": \"sun1\",\n" +
+                        "        \"hOffset\": 250,\n" +
+                        "        \"vOffset\": 250,\n" +
+                        "        \"alignment\": \"center\"\n" +
+                        "    },\n" +
+                        "    \"text\": {\n" +
+                        "        \"data\": \"Click Here\",\n" +
+                        "        \"size\": 36,\n" +
+                        "        \"style\": \"bold\",\n" +
+                        "        \"name\": \"text1\",\n" +
+                        "        \"hOffset\": 250,\n" +
+                        "        \"vOffset\": 100,\n" +
+                        "        \"alignment\": \"center\",\n" +
+                        "        \"onMouseUp\": \"sun1.opacity = (sun1.opacity / 100) * 90;\"\n" +
+                        "    }\n" +
+                        "}}";
+
+        JSONObject jsonObject = new JSONObject(str);
+        System.out.println(jsonObject.toString(2));
+
+    }
+
+    @Test
+    public void jsonExample4() {
+        String str =
+                "{\"web-app\": {\n" +
+                        "  \"servlet\": [   \n" +
+                        "    {\n" +
+                        "      \"servlet-name\": \"cofaxCDS\",\n" +
+                        "      \"servlet-class\": \"org.cofax.cds.CDSServlet\",\n" +
+                        "      \"init-param\": {\n" +
+                        "        \"configGlossary:installationAt\": \"Philadelphia, PA\",\n" +
+                        "        \"configGlossary:adminEmail\": \"ksm@pobox.com\",\n" +
+                        "        \"configGlossary:poweredBy\": \"Cofax\",\n" +
+                        "        \"configGlossary:poweredByIcon\": \"/images/cofax.gif\",\n" +
+                        "        \"configGlossary:staticPath\": \"/content/static\",\n" +
+                        "        \"templateProcessorClass\": \"org.cofax.WysiwygTemplate\",\n" +
+                        "        \"templateLoaderClass\": \"org.cofax.FilesTemplateLoader\",\n" +
+                        "        \"templatePath\": \"templates\",\n" +
+                        "        \"templateOverridePath\": \"\",\n" +
+                        "        \"defaultListTemplate\": \"listTemplate.htm\",\n" +
+                        "        \"defaultFileTemplate\": \"articleTemplate.htm\",\n" +
+                        "        \"useJSP\": false,\n" +
+                        "        \"jspListTemplate\": \"listTemplate.jsp\",\n" +
+                        "        \"jspFileTemplate\": \"articleTemplate.jsp\",\n" +
+                        "        \"cachePackageTagsTrack\": 200,\n" +
+                        "        \"cachePackageTagsStore\": 200,\n" +
+                        "        \"cachePackageTagsRefresh\": 60,\n" +
+                        "        \"cacheTemplatesTrack\": 100,\n" +
+                        "        \"cacheTemplatesStore\": 50,\n" +
+                        "        \"cacheTemplatesRefresh\": 15,\n" +
+                        "        \"cachePagesTrack\": 200,\n" +
+                        "        \"cachePagesStore\": 100,\n" +
+                        "        \"cachePagesRefresh\": 10,\n" +
+                        "        \"cachePagesDirtyRead\": 10,\n" +
+                        "        \"searchEngineListTemplate\": \"forSearchEnginesList.htm\",\n" +
+                        "        \"searchEngineFileTemplate\": \"forSearchEngines.htm\",\n" +
+                        "        \"searchEngineRobotsDb\": \"WEB-INF/robots.db\",\n" +
+                        "        \"useDataStore\": true,\n" +
+                        "        \"dataStoreClass\": \"org.cofax.SqlDataStore\",\n" +
+                        "        \"redirectionClass\": \"org.cofax.SqlRedirection\",\n" +
+                        "        \"dataStoreName\": \"cofax\",\n" +
+                        "        \"dataStoreDriver\": \"com.microsoft.jdbc.sqlserver.SQLServerDriver\",\n" +
+                        "        \"dataStoreUrl\": \"jdbc:microsoft:sqlserver://LOCALHOST:1433;DatabaseName=goon\",\n" +
+                        "        \"dataStoreUser\": \"sa\",\n" +
+                        "        \"dataStorePassword\": \"dataStoreTestQuery\",\n" +
+                        "        \"dataStoreTestQuery\": \"SET NOCOUNT ON;select test='test';\",\n" +
+                        "        \"dataStoreLogFile\": \"/usr/local/tomcat/logs/datastore.log\",\n" +
+                        "        \"dataStoreInitConns\": 10,\n" +
+                        "        \"dataStoreMaxConns\": 100,\n" +
+                        "        \"dataStoreConnUsageLimit\": 100,\n" +
+                        "        \"dataStoreLogLevel\": \"debug\",\n" +
+                        "        \"maxUrlLength\": 500}},\n" +
+                        "    {\n" +
+                        "      \"servlet-name\": \"cofaxEmail\",\n" +
+                        "      \"servlet-class\": \"org.cofax.cds.EmailServlet\",\n" +
+                        "      \"init-param\": {\n" +
+                        "      \"mailHost\": \"mail1\",\n" +
+                        "      \"mailHostOverride\": \"mail2\"}},\n" +
+                        "    {\n" +
+                        "      \"servlet-name\": \"cofaxAdmin\",\n" +
+                        "      \"servlet-class\": \"org.cofax.cds.AdminServlet\"},\n" +
+                        " \n" +
+                        "    {\n" +
+                        "      \"servlet-name\": \"fileServlet\",\n" +
+                        "      \"servlet-class\": \"org.cofax.cds.FileServlet\"},\n" +
+                        "    {\n" +
+                        "      \"servlet-name\": \"cofaxTools\",\n" +
+                        "      \"servlet-class\": \"org.cofax.cms.CofaxToolsServlet\",\n" +
+                        "      \"init-param\": {\n" +
+                        "        \"templatePath\": \"toolstemplates/\",\n" +
+                        "        \"log\": 1,\n" +
+                        "        \"logLocation\": \"/usr/local/tomcat/logs/CofaxTools.log\",\n" +
+                        "        \"logMaxSize\": \"\",\n" +
+                        "        \"dataLog\": 1,\n" +
+                        "        \"dataLogLocation\": \"/usr/local/tomcat/logs/dataLog.log\",\n" +
+                        "        \"dataLogMaxSize\": \"\",\n" +
+                        "        \"removePageCache\": \"/content/admin/remove?cache=pages&id=\",\n" +
+                        "        \"removeTemplateCache\": \"/content/admin/remove?cache=templates&id=\",\n" +
+                        "        \"fileTransferFolder\": \"/usr/local/tomcat/webapps/content/fileTransferFolder\",\n" +
+                        "        \"lookInContext\": 1,\n" +
+                        "        \"adminGroupID\": 4,\n" +
+                        "        \"betaServer\": true}}],\n" +
+                        "  \"servlet-mapping\": {\n" +
+                        "    \"cofaxCDS\": \"/\",\n" +
+                        "    \"cofaxEmail\": \"/cofaxutil/aemail/*\",\n" +
+                        "    \"cofaxAdmin\": \"/admin/*\",\n" +
+                        "    \"fileServlet\": \"/static/*\",\n" +
+                        "    \"cofaxTools\": \"/tools/*\"},\n" +
+                        " \n" +
+                        "  \"taglib\": {\n" +
+                        "    \"taglib-uri\": \"cofax.tld\",\n" +
+                        "    \"taglib-location\": \"/WEB-INF/tlds/cofax.tld\"}}}";
+
+        JSONObject jsonObject = new JSONObject(str);
+        System.out.println(jsonObject.toString(4));
+
+    }
+
+    @Test
+    public void jsonExample5() {
+        String str =
+                "{\"menu\": {\n" +
+                        "    \"header\": \"SVG Viewer\",\n" +
+                        "    \"items\": [\n" +
+                        "        {\"id\": \"Open\"},\n" +
+                        "        {\"id\": \"OpenNew\", \"label\": \"Open New\"},\n" +
+                        "        null,\n" +
+                        "        {\"id\": \"ZoomIn\", \"label\": \"Zoom In\"},\n" +
+                        "        {\"id\": \"ZoomOut\", \"label\": \"Zoom Out\"},\n" +
+                        "        {\"id\": \"OriginalView\", \"label\": \"Original View\"},\n" +
+                        "        null,\n" +
+                        "        {\"id\": \"Quality\"},\n" +
+                        "        {\"id\": \"Pause\"},\n" +
+                        "        {\"id\": \"Mute\"},\n" +
+                        "        null,\n" +
+                        "        {\"id\": \"Find\", \"label\": \"Find...\"},\n" +
+                        "        {\"id\": \"FindAgain\", \"label\": \"Find Again\"},\n" +
+                        "        {\"id\": \"Copy\"},\n" +
+                        "        {\"id\": \"CopyAgain\", \"label\": \"Copy Again\"},\n" +
+                        "        {\"id\": \"CopySVG\", \"label\": \"Copy SVG\"},\n" +
+                        "        {\"id\": \"ViewSVG\", \"label\": \"View SVG\"},\n" +
+                        "        {\"id\": \"ViewSource\", \"label\": \"View Source\"},\n" +
+                        "        {\"id\": \"SaveAs\", \"label\": \"Save As\"},\n" +
+                        "        null,\n" +
+                        "        {\"id\": \"Help\"},\n" +
+                        "        {\"id\": \"About\", \"label\": \"About Adobe CVG Viewer...\"}\n" +
+                        "    ]\n" +
+                        "}}";
+
+        JSONObject jsonObject = new JSONObject(str);
+        System.out.println(jsonObject.toString(4));
+
+    }
+
+    @Test
+    public void jsonExample6() {
+        String str =
+                "[" +
+                " [ 1, 2, 3, 4, 5, 6], " +
+                " [ 1, 2, 3, 4, 5, 6], " +
+                " [ 1, 2, 3, 4, 5, 6], " +
+                " [ [1, 2, 3], 4, [ 5, 6]], " +
+                " [ [1, 2, 3], [4, 5, 6]], " +
+                " [ [1, 2, 3], [4, 5, 6]], " +
+                " [ 1, [2, 3], [4, 5], 6]" +
+                "]";
+
+        JSONArray jsonArray = new JSONArray(str);
+        System.out.println(jsonArray.toString(4));
+
+    }
+
+    @Test
+    public void jsonExampleYouTube() {
+        // Taken from the Google JSON Style Guide
+        String str =
+                "{\n" +
+                        "  \"apiVersion\": \"2.0\",\n" +
+                        "  \"data\": {\n" +
+                        "    \"updated\": \"2010-02-04T19:29:54.001Z\",\n" +
+                        "    \"totalItems\": 6741,\n" +
+                        "    \"startIndex\": 1,\n" +
+                        "    \"itemsPerPage\": 1,\n" +
+                        "    \"items\": [\n" +
+                        "      {\n" +
+                        "        \"id\": \"BGODurRfVv4\",\n" +
+                        "        \"uploaded\": \"2009-11-17T20:10:06.000Z\",\n" +
+                        "        \"updated\": \"2010-02-04T06:25:57.000Z\",\n" +
+                        "        \"uploader\": \"docchat\",\n" +
+                        "        \"category\": \"Animals\",\n" +
+                        "        \"title\": \"From service dog to SURFice dog\",\n" +
+                        "        \"description\": \"Surf dog Ricochets inspirational video ...\",\n" +
+                        "        \"tags\": [\n" +
+                        "          \"Surf dog\",\n" +
+                        "          \"dog surfing\",\n" +
+                        "          \"dog\",\n" +
+                        "          \"golden retriever\",\n" +
+                        "        ],\n" +
+                        "        \"thumbnail\": {\n" +
+                        "          \"default\": \"https://i.ytimg.com/vi/BGODurRfVv4/default.jpg\",\n" +
+                        "          \"hqDefault\": \"https://i.ytimg.com/vi/BGODurRfVv4/hqdefault.jpg\"\n" +
+                        "        },\n" +
+                        "        \"player\": {\n" +
+                        "          \"default\": \"https://www.youtube.com/watch?v=BGODurRfVv4&feature=youtube_gdata\",\n" +
+                        "          \"mobile\": \"https://m.youtube.com/details?v=BGODurRfVv4\"\n" +
+                        "        },\n" +
+                        "        \"content\": {\n" +
+                        "          \"1\": \"rtsp://v5.cache6.c.youtube.com/CiILENy73wIaGQn-Vl-0uoNjBBMYDSANFEgGUgZ2aWRlb3MM/0/0/0/video.3gp\",\n" +
+                        "          \"5\": \"https://www.youtube.com/v/BGODurRfVv4?f=videos&app=youtube_gdata\",\n" +
+                        "          \"6\": \"rtsp://v7.cache7.c.youtube.com/CiILENy73wIaGQn-Vl-0uoNjBBMYESARFEgGUgZ2aWRlb3MM/0/0/0/video.3gp\"\n" +
+                        "        },\n" +
+                        "        \"duration\": 315,\n" +
+                        "        \"rating\": 4.96,\n" +
+                        "        \"ratingCount\": 2043,\n" +
+                        "        \"viewCount\": 1781691,\n" +
+                        "        \"favoriteCount\": 3363,\n" +
+                        "        \"commentCount\": 1007,\n" +
+                        "        \"commentsAllowed\": true\n" +
+                        "      }\n" +
+                        "    ]\n" +
+                        "  }\n" +
+                        "}";
+
+        JSONObject jsonObject = new JSONObject(str);
+        System.out.println(jsonObject.toString(2));
+
+    }
+
     /**
      * A JSONObject can be created from another JSONObject plus a list of names.
-     * In this test, some of the starting JSONObject keys are not in the 
+     * In this test, some of the starting JSONObject keys are not in the
      * names list.
      */
     @Test
@@ -308,8 +603,7 @@ public class JSONObjectTest {
         when(myBean.isTrueKey()).thenReturn(true);
         when(myBean.isFalseKey()).thenReturn(false);
         when(myBean.getStringReaderKey()).thenReturn(
-            new StringReader("") {
-            });
+            new StringReader("") {});
 
         JSONObject jsonObject = new JSONObject(myBean);
 
@@ -323,6 +617,192 @@ public class JSONObjectTest {
         assertTrue("expected h\be\tllo w\u1234orld!", "h\be\tllo w\u1234orld!".equals(jsonObject.query("/escapeStringKey")));
         assertTrue("expected 42", Integer.valueOf("42").equals(jsonObject.query("/intKey")));
         assertTrue("expected -23.45e7", Double.valueOf("-23.45e7").equals(jsonObject.query("/doubleKey")));
+        // sorry, mockito artifact
+        assertTrue("expected 2 callbacks items", ((List<?>)(JsonPath.read(doc, "$.callbacks"))).size() == 2);
+        assertTrue("expected 0 handler items", ((Map<?,?>)(JsonPath.read(doc, "$.callbacks[0].handler"))).size() == 0);
+        assertTrue("expected 0 callbacks[1] items", ((Map<?,?>)(JsonPath.read(doc, "$.callbacks[1]"))).size() == 0);
+    }
+
+    /**
+     * JSONObject built from a bean. In this case all but one of the
+     * bean getters return valid JSON types
+     */
+    @Test
+    public void jsonObjectByBeanWriter2() {
+        /*
+         * Default access classes have to be mocked since JSONObject, which is
+         * not in the same package, cannot call MyBean methods by reflection.
+         */
+        MyBean myBean = new MySuperBean();
+
+        String beanJson = JSONObject.valueToString(myBean);
+        JSONObject jsonObject = new JSONObject(beanJson);
+        System.out.println(beanJson);
+        System.out.println(jsonObject.toString(2));
+
+        // validate JSON
+        Object doc = Configuration.defaultConfiguration().jsonProvider().parse(jsonObject.toString());
+        assertTrue("expected 8 top level items", ((Map<?,?>)(JsonPath.read(doc, "$"))).size() == 8);
+        assertTrue("expected 0 items in stringReaderKey", ((Map<?, ?>) (JsonPath.read(doc, "$.stringReaderKey"))).size() == 0);
+        assertTrue("expected true", Boolean.TRUE.equals(jsonObject.query("/trueKey")));
+        assertTrue("expected false", Boolean.FALSE.equals(jsonObject.query("/falseKey")));
+        assertTrue("expected hello world!","hello world!".equals(jsonObject.query("/stringKey")));
+        assertTrue("expected h\be\tllo w\u1234orld!", "h\be\tllo w\u1234orld!".equals(jsonObject.query("/escapeStringKey")));
+        assertTrue("expected 42", Integer.valueOf("42").equals(jsonObject.query("/intKey")));
+        assertTrue("expected -23.45e7", Double.valueOf("-23.45e7").equals(jsonObject.query("/doubleKey")));
+        assertTrue("expected 123.456", Double.valueOf(123.456d).equals(jsonObject.query("/number")));
+    }
+
+    /**
+     * JSONObject built from a bean. In this case all but one of the
+     * bean getters return valid JSON types
+     */
+    @Test
+    public void jsonObjectByBeanWriter3() {
+        /*
+         * Default access classes have to be mocked since JSONObject, which is
+         * not in the same package, cannot call MyBean methods by reflection.
+         */
+        MyBean myBean = new MySubBean();
+
+        String beanJson = JSONObject.valueToString(myBean);
+        System.out.println(beanJson);
+        JSONObject jsonObject = new JSONObject(myBean);
+        System.out.println(jsonObject.toString(2));
+
+        // validate JSON
+        Object doc = Configuration.defaultConfiguration().jsonProvider().parse(jsonObject.toString());
+        assertTrue("expected 12 top level items", ((Map<?,?>)(JsonPath.read(doc, "$"))).size() == 12);
+        assertTrue("expected 0 items in stringReaderKey", ((Map<?, ?>) (JsonPath.read(doc, "$.stringReaderKey"))).size() == 0);
+        assertTrue("expected true", Boolean.TRUE.equals(jsonObject.query("/trueKey")));
+        assertTrue("expected false", Boolean.FALSE.equals(jsonObject.query("/falseKey")));
+        assertTrue("expected hello world!","hello world!".equals(jsonObject.query("/stringKey")));
+        assertTrue("expected h\be\tllo w\u1234orld!", "h\be\tllo w\u1234orld!".equals(jsonObject.query("/escapeStringKey")));
+        assertTrue("expected 42", Integer.valueOf("42").equals(jsonObject.query("/intKey")));
+        assertTrue("expected -23.45e7", Double.valueOf("-23.45e7").equals(jsonObject.query("/doubleKey")));
+        assertTrue("expected 10000", new BigInteger("10000").equals(jsonObject.query("/number")));
+        assertTrue("expected 12345", Long.valueOf("12345").equals(jsonObject.query("/longKey")));
+    }
+
+    /**
+     * JSONObject built from a bean. In this case all but one of the
+     * bean getters return valid JSON types
+     */
+    @Test
+    public void jsonObjectByBeanWriter() {
+        /**
+         * Default access classes have to be mocked since JSONObject, which is
+         * not in the same package, cannot call MyBean methods by reflection.
+         */
+        MyBean myBean = mock(MyBean.class);
+        when(myBean.getDoubleKey()).thenReturn(-23.45e7);
+        when(myBean.getIntKey()).thenReturn(42);
+        when(myBean.getStringKey()).thenReturn("hello world!");
+        when(myBean.getEscapeStringKey()).thenReturn("h\be\tllo w\u1234orld!");
+        when(myBean.isTrueKey()).thenReturn(true);
+        when(myBean.isFalseKey()).thenReturn(false);
+        when(myBean.getStringReaderKey()).thenReturn(
+                new StringReader("") {
+                });
+
+        String beanJson = JSONObject.valueToString(myBean);
+        System.out.println(beanJson);
+        JSONObject jsonObject = new JSONObject(beanJson);
+        System.out.println(jsonObject.toString(2));
+
+        // validate JSON
+        Object doc = Configuration.defaultConfiguration().jsonProvider().parse(beanJson);
+        assertTrue("expected 8 top level items", ((Map<?,?>)(JsonPath.read(doc, "$"))).size() == 8);
+        assertTrue("expected 0 items in stringReaderKey", ((Map<?, ?>) (JsonPath.read(doc, "$.stringReaderKey"))).size() == 0);
+        assertTrue("expected true", Boolean.TRUE.equals(jsonObject.query("/trueKey")));
+        assertTrue("expected false", Boolean.FALSE.equals(jsonObject.query("/falseKey")));
+        assertTrue("expected hello world!","hello world!".equals(jsonObject.query("/stringKey")));
+        assertTrue("expected h\be\tllo w\u1234orld!", "h\be\tllo w\u1234orld!".equals(jsonObject.query("/escapeStringKey")));
+        assertTrue("expected 42", Integer.valueOf("42").equals(jsonObject.query("/intKey")));
+        assertTrue("expected -23.45e7", Double.valueOf("-23.45e7").equals(jsonObject.query("/doubleKey")));
+        // sorry, mockito artifact
+        assertTrue("expected 2 callbacks items", ((List<?>)(JsonPath.read(doc, "$.callbacks"))).size() == 2);
+        assertTrue("expected 0 handler items", ((Map<?,?>)(JsonPath.read(doc, "$.callbacks[0].handler"))).size() == 0);
+        assertTrue("expected 0 callbacks[1] items", ((Map<?,?>)(JsonPath.read(doc, "$.callbacks[1]"))).size() == 0);
+    }
+
+    /**
+     * JSONObject built from a bean. In this case all but one of the
+     * bean getters return valid JSON types
+     */
+    @Test
+    public void jsonObjectByBeanNaN() {
+        /**
+         * Default access classes have to be mocked since JSONObject, which is
+         * not in the same package, cannot call MyBean methods by reflection.
+         */
+        MyBean myBean = mock(MyBean.class);
+        when(myBean.getDoubleKey()).thenReturn(Double.NaN);
+        when(myBean.getIntKey()).thenReturn(42);
+        when(myBean.getStringKey()).thenReturn("hello world!");
+        when(myBean.getEscapeStringKey()).thenReturn("h\be\tllo w\u1234orld!");
+        when(myBean.isTrueKey()).thenReturn(true);
+        when(myBean.isFalseKey()).thenReturn(false);
+        when(myBean.getStringReaderKey()).thenReturn(
+                new StringReader("") {
+                });
+
+        JSONObject jsonObject = new JSONObject(myBean);
+        String beanJson = jsonObject.toString(2);
+        System.out.println(beanJson);
+
+        // validate JSON
+        Object doc = Configuration.defaultConfiguration().jsonProvider().parse(beanJson);
+        assertTrue("expected 8 top level items", ((Map<?,?>)(JsonPath.read(doc, "$"))).size() == 8);
+        assertTrue("expected 0 items in stringReaderKey", ((Map<?, ?>) (JsonPath.read(doc, "$.stringReaderKey"))).size() == 0);
+        assertTrue("expected true", Boolean.TRUE.equals(jsonObject.query("/trueKey")));
+        assertTrue("expected false", Boolean.FALSE.equals(jsonObject.query("/falseKey")));
+        assertTrue("expected hello world!","hello world!".equals(jsonObject.query("/stringKey")));
+        assertTrue("expected h\be\tllo w\u1234orld!", "h\be\tllo w\u1234orld!".equals(jsonObject.query("/escapeStringKey")));
+        assertTrue("expected 42", Integer.valueOf("42").equals(jsonObject.query("/intKey")));
+        assertTrue("expected null", JSONObject.NULL.equals(jsonObject.query("/doubleKey")));
+        // sorry, mockito artifact
+        assertTrue("expected 2 callbacks items", ((List<?>)(JsonPath.read(doc, "$.callbacks"))).size() == 2);
+        assertTrue("expected 0 handler items", ((Map<?,?>)(JsonPath.read(doc, "$.callbacks[0].handler"))).size() == 0);
+        assertTrue("expected 0 callbacks[1] items", ((Map<?,?>)(JsonPath.read(doc, "$.callbacks[1]"))).size() == 0);
+    }
+
+    /**
+     * JSONObject built from a bean. In this case all but one of the
+     * bean getters return valid JSON types
+     */
+    @Test
+    public void jsonObjectByBeanNaNWriter() {
+        /**
+         * Default access classes have to be mocked since JSONObject, which is
+         * not in the same package, cannot call MyBean methods by reflection.
+         */
+        MyBean myBean = mock(MyBean.class);
+        when(myBean.getDoubleKey()).thenReturn(Double.NaN);
+        when(myBean.getIntKey()).thenReturn(42);
+        when(myBean.getStringKey()).thenReturn("hello world!");
+        when(myBean.getEscapeStringKey()).thenReturn("h\be\tllo w\u1234orld!");
+        when(myBean.isTrueKey()).thenReturn(true);
+        when(myBean.isFalseKey()).thenReturn(false);
+        when(myBean.getStringReaderKey()).thenReturn(
+                new StringReader("") {
+                });
+
+        String beanJson = JSONObject.valueToString(myBean);
+        JSONObject jsonObject = new JSONObject(beanJson);
+        System.out.println(beanJson);
+        System.out.println(jsonObject.toString(2));
+
+        // validate JSON
+        Object doc = Configuration.defaultConfiguration().jsonProvider().parse(beanJson);
+        assertTrue("expected 8 top level items", ((Map<?,?>)(JsonPath.read(doc, "$"))).size() == 8);
+        assertTrue("expected 0 items in stringReaderKey", ((Map<?, ?>) (JsonPath.read(doc, "$.stringReaderKey"))).size() == 0);
+        assertTrue("expected true", Boolean.TRUE.equals(jsonObject.query("/trueKey")));
+        assertTrue("expected false", Boolean.FALSE.equals(jsonObject.query("/falseKey")));
+        assertTrue("expected hello world!","hello world!".equals(jsonObject.query("/stringKey")));
+        assertTrue("expected h\be\tllo w\u1234orld!", "h\be\tllo w\u1234orld!".equals(jsonObject.query("/escapeStringKey")));
+        assertTrue("expected 42", Integer.valueOf("42").equals(jsonObject.query("/intKey")));
+        assertTrue("expected null", JSONObject.NULL.equals(jsonObject.query("/doubleKey")));
         // sorry, mockito artifact
         assertTrue("expected 2 callbacks items", ((List<?>)(JsonPath.read(doc, "$.callbacks"))).size() == 2);
         assertTrue("expected 0 handler items", ((Map<?,?>)(JsonPath.read(doc, "$.callbacks[0].handler"))).size() == 0);
@@ -536,7 +1016,7 @@ public class JSONObjectTest {
                 JSONObject.stringToValue( "0.2" ) instanceof Double );
         assertTrue( "Doubles should be Doubles, even when incorrectly converting floats!",
                 JSONObject.stringToValue( new Double( "0.2f" ).toString() ) instanceof Double );
-        /**
+        /*
          * This test documents a need for BigDecimal conversion.
          */
         Object obj = JSONObject.stringToValue( "299792.457999999984" );
@@ -838,8 +1318,8 @@ public class JSONObjectTest {
                 jsonObject.getBigInteger("bigInt").equals(bigInteger));
         assertTrue("jsonObject.optBigInteger() handles bigInt correctly",
                 jsonObject.optBigInteger("bigInt", BigInteger.ONE).equals(bigInteger));
-        assertTrue("jsonObject serializes bigInt correctly",
-                jsonObject.toString().equals("{\"bigInt\":123456789012345678901234567890}"));
+        assertEquals("jsonObject serializes bigInt correctly",
+                jsonObject.toString(), "{\"bigInt\":123456789012345678901234567890}");
         jsonObject = new JSONObject();
         jsonObject.put("bigDec", bigDecimal);
         assertTrue("jsonObject.put() handles bigDec correctly",
@@ -1447,8 +1927,8 @@ public class JSONObjectTest {
         map.put("key1", "val1");
         map.put("key2", "val2");
         map.put("key3", "val3");
-        assertTrue("map valueToString() incorrect",
-                jsonObject.toString().equals(JSONObject.valueToString(map))); 
+        assertEquals("map valueToString() incorrect",
+                jsonObject.toString(), JSONObject.valueToString(map));
         Collection<Integer> collection = new ArrayList<Integer>();
         collection.add(new Integer(1));
         collection.add(new Integer(2));
@@ -1460,6 +1940,69 @@ public class JSONObjectTest {
         Integer[] array = { new Integer(1), new Integer(2), new Integer(3) };
         assertTrue("array valueToString() incorrect",
                 jsonArray.toString().equals(JSONObject.valueToString(array))); 
+    }
+
+    /**
+     * Exercises the JSONObject.valueToString() method for various types
+     */
+    @Test
+    public void toStringJSON() {
+
+        JSONString jsonString = () -> "[ \"my string\" ]";
+        JSONObject jsonObject = new JSONObject();
+        jsonObject.put("key1", jsonString);
+        System.out.println(jsonObject.toString(4));
+
+        jsonString = () -> "42";
+        jsonObject = new JSONObject();
+        jsonObject.put("key1", jsonString);
+        System.out.println(jsonObject.toString(4));
+
+        jsonString = new JSONString() {
+            @Override
+            public String toJSONString() {
+                return null;
+            }
+
+            @Override
+            public String toString() {
+                return "my string";
+            }
+        };
+
+        jsonObject = new JSONObject();
+        jsonObject.put("key1", jsonString);
+        System.out.println(jsonObject.toString(4));
+
+        String jsonObjectStr =
+                "{"+
+                        "\"key1\":\"val1\","+
+                        "\"key2\":\"val2\","+
+                        "\"key3\":\"val3\""+
+                        "}";
+        jsonObject = new JSONObject(jsonObjectStr);
+        System.out.println(jsonObject.toString(4));
+
+        String jsonArrayStr = "[1,2,3]";
+        JSONArray jsonArray = new JSONArray(jsonArrayStr);
+        System.out.println(jsonArray.toString(4));
+
+        Map<String, String> map = new HashMap<String, String>();
+        map.put("key1", "val1");
+        map.put("key2", "val2");
+        map.put("key3", "val3");
+        System.out.println(jsonObject.toString(4));
+
+        Collection<Integer> collection = new ArrayList<Integer>();
+        collection.add(new Integer(1));
+        collection.add(new Integer(2));
+        collection.add(new Integer(3));
+        jsonArray = new JSONArray(collection);
+        System.out.println(jsonArray.toString(4));
+
+        Integer[] array = { new Integer(1), new Integer(2), new Integer(3) };
+        jsonArray = new JSONArray(array);
+        System.out.println(jsonArray.toString(4));
     }
 
     /**
@@ -1846,9 +2389,8 @@ public class JSONObjectTest {
         StringWriter stringWriter = new StringWriter();
         Writer writer = jsonObject.write(stringWriter);
         String actualStr = writer.toString();
-        assertTrue("write() expected " +expectedStr+
-                "but found " +actualStr,
-                expectedStr.equals(actualStr));
+        assertEquals("write() expected",
+                expectedStr, actualStr);
     }
 
     /**

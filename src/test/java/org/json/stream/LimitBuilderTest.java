@@ -2,7 +2,9 @@ package org.json.stream;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
+import org.json.util.JSONPointerUtils;
 import org.json.util.SizedIterable;
+import org.json.util.StructureIdentifier;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -127,7 +129,8 @@ public final class LimitBuilderTest {
             "  \"i\\\\j\": 5,\n" +
             "  \"k\\\"l\": 6,\n" +
             "  \" \": 7,\n" +
-            "  \"m~n\": 8\n" +
+            "  \"m~n\": 8,\n" +
+            "  \"q~/~r\": 9\n" +
             "}";
 
     @Test
@@ -769,6 +772,7 @@ public final class LimitBuilderTest {
         Assert.assertEquals("/k\"l", pointers.next());
         Assert.assertEquals("/ ", pointers.next());
         Assert.assertEquals("/m~0n", pointers.next());
+        Assert.assertEquals("/q~0~1~0r", pointers.next());
 
         pointers = pointerList.iterator();
         Assert.assertTrue(jsonObject.query(pointers.next()) instanceof JSONArray);
@@ -783,6 +787,7 @@ public final class LimitBuilderTest {
         Assert.assertEquals(jsonObject.query(pointers.next()), Integer.valueOf(6));
         Assert.assertEquals(jsonObject.query(pointers.next()), Integer.valueOf(7));
         Assert.assertEquals(jsonObject.query(pointers.next()), Integer.valueOf(8));
+        Assert.assertEquals(jsonObject.query(pointers.next()), Integer.valueOf(9));
         Assert.assertFalse(pointers.hasNext());
     }
 
@@ -942,14 +947,14 @@ public final class LimitBuilderTest {
         }
 
         @Override
-        public boolean acceptIndex(int index, JSONStreamReader.ParseState state, SizedIterable<StructureBuilder> stack) {
-            pointerList.add(JSONPointerUtils.toJSONPointer(stack));
+        public boolean acceptIndex(int index, JSONStreamReader.ParseState state, SizedIterable<StructureIdentifier> ids) {
+            pointerList.add(JSONPointerUtils.toJSONPointer(ids));
             return true;
         }
 
         @Override
-        public boolean acceptField(String fieldName, JSONStreamReader.ParseState state, SizedIterable<StructureBuilder> stack) {
-            pointerList.add(JSONPointerUtils.toJSONPointer(stack));
+        public boolean acceptField(String fieldName, JSONStreamReader.ParseState state, SizedIterable<StructureIdentifier> ids) {
+            pointerList.add(JSONPointerUtils.toJSONPointer(ids));
             return true;//"key2".equals(fieldName);
         }
 
